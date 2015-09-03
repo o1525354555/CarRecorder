@@ -134,17 +134,20 @@ public class RecorderActivity extends Activity {
 		}
 		// set timer invisible
 		timer.setVisibility(View.GONE);
-
 		// set buffer path
 		mRecVedioPath = new File(Environment.getExternalStorageDirectory()
 				.getAbsolutePath() + "/hfdatabase/video/temp/");
 		if (!mRecVedioPath.exists()) {
 			mRecVedioPath.mkdirs();
 		}
+	}
+
+	private void initCamera() {
 		// bind the preview view , SurfaceHolder is a controller of SurfaceView
 		SurfaceHolder holder = mSurfaceview.getHolder();
 		holder.addCallback(new CarmeraCallBack());
-		holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+		// holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);//this is
+		// ignored, this value is set automatically when needed.
 	}
 
 	private void initOther() {
@@ -159,13 +162,10 @@ public class RecorderActivity extends Activity {
 		initIntentData();
 		initSensor();
 		initDynamicView();
+		initCamera();
 		initListener();
 		initOther();
 	}
-
-	/*
-	 * 消息提示
-	 */
 
 	/*
 	 * 生成video文件名字
@@ -221,7 +221,7 @@ public class RecorderActivity extends Activity {
 			System.out.println("k=" + k);
 			if (50 * m <= k && 100 * m >= k) {
 				if (rank2_1 == 1) {
-					myTextView1.setText("光线较暗请开车灯");
+					myTextView1.setText(EnvConf.NOTICE_WEAK_LIGHT_1);
 					myTextView1.setVisibility(View.VISIBLE);
 					myTextView1.setTextColor(Color.YELLOW);
 					myTextView2.setVisibility(View.GONE);
@@ -233,11 +233,11 @@ public class RecorderActivity extends Activity {
 			}
 			if (50 * m >= k) {
 				if (rank2_1 == 1) {
-					myTextView2.setText("光线非常暗\n请立即开灯");
+					myTextView2.setText(EnvConf.NOTICE_WEAK_LIGHT_1_MUTIL_LINE);
 					myTextView2.setVisibility(View.VISIBLE);
 					myTextView2.setTextColor(Color.YELLOW);
 					myTextView1.setVisibility(View.GONE);
-					spark();
+					sparkBackground();
 				}
 				range = 2;
 				if (rank2_2 == 1) {
@@ -247,8 +247,8 @@ public class RecorderActivity extends Activity {
 			if (100 * m <= k) {
 				myTextView1.setVisibility(View.GONE);
 				myTextView2.setVisibility(View.GONE);
-				Toast.makeText(getApplicationContext(), "光线良好",
-						Toast.LENGTH_LONG).show();
+				Toast.makeText(getApplicationContext(),
+						EnvConf.NOTICE_GOOD_LIGHT, Toast.LENGTH_LONG).show();
 			}
 
 			k = 0;
@@ -299,7 +299,7 @@ public class RecorderActivity extends Activity {
 					System.out.println("k=" + k);
 					if (50 * m <= k && 100 * m >= k) {
 						if (rank2_1 == 1) {
-							myTextView1.setText("光线较暗请开车灯");
+							myTextView1.setText(EnvConf.NOTICE_WEAK_LIGHT_1);
 							myTextView1.setVisibility(View.VISIBLE);
 							myTextView1.setTextColor(Color.YELLOW);
 							myTextView2.setVisibility(View.GONE);
@@ -311,11 +311,12 @@ public class RecorderActivity extends Activity {
 					}
 					if (50 * m >= k) {
 						if (rank2_1 == 1) {
-							myTextView2.setText("光线非常暗\n请立即开灯");
+							myTextView2
+									.setText(EnvConf.NOTICE_WEAK_LIGHT_2_MUTIL_LINE);
 							myTextView2.setVisibility(View.VISIBLE);
 							myTextView2.setTextColor(Color.YELLOW);
 							myTextView1.setVisibility(View.GONE);
-							spark();
+							sparkBackground();
 						}
 						range = 2;
 						if (rank2_2 == 1) {
@@ -325,8 +326,9 @@ public class RecorderActivity extends Activity {
 					if (100 * m <= k) {
 						myTextView1.setVisibility(View.GONE);
 						myTextView2.setVisibility(View.GONE);
-						Toast.makeText(getApplicationContext(), "光线良好",
-								Toast.LENGTH_LONG).show();
+						Toast.makeText(getApplicationContext(),
+								EnvConf.NOTICE_GOOD_LIGHT, Toast.LENGTH_LONG)
+								.show();
 					}
 
 					k = 0;
@@ -392,9 +394,10 @@ public class RecorderActivity extends Activity {
 									voiceToast();
 								}
 								if (rank3_1 == 1) {
-									myTextView3.setText("车速过快，请减速行驶");
+									myTextView3
+											.setText(EnvConf.NOTICE_SLOWDOWN_SEPPD);
 									myTextView3.setTextColor(Color.YELLOW);
-									spark();
+									sparkBackground();
 								}
 							} else {
 								if (rank3_1 == 1) {
@@ -440,11 +443,11 @@ public class RecorderActivity extends Activity {
 					} else if (values[0] <= 10) {
 						if (rank2_1 == 1) {
 							myTextView2
-									.setText(EnvConf.NOTICE_WEAK_LIGHT_MUTIL_LINE);
+									.setText(EnvConf.NOTICE_WEAK_LIGHT_1_MUTIL_LINE);
 							myTextView2.setVisibility(View.VISIBLE);
 							myTextView2.setTextColor(Color.YELLOW);
 							myTextView1.setVisibility(View.GONE);
-							spark();
+							sparkBackground();
 						}
 						range = 2;
 						if (rank2_2 == 1) {
@@ -610,7 +613,7 @@ public class RecorderActivity extends Activity {
 		}
 	}
 
-	public void spark() {
+	public void sparkBackground() {
 		Timer timer = new Timer();
 		TimerTask taskcc = new TimerTask() {
 			public void run() {

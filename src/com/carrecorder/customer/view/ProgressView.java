@@ -14,8 +14,6 @@ import android.util.DisplayMetrics;
 import android.view.View;
 
 public class ProgressView extends View {
-	private final String TAG = getClass().getSimpleName();
-
 	public ProgressView(Context context) {
 		super(context);
 		init(context);
@@ -45,7 +43,7 @@ public class ProgressView extends View {
 		displayMetrics = getResources().getDisplayMetrics();
 		screenWidth = displayMetrics.widthPixels;
 		perWidth = screenWidth / RecorderEnv.MAX_RECORD_TIME;
-//		Log.d("wzy.size", TAG + ".perWidth=" + perWidth);
+		// Log.d("wzy.size", TAG + ".perWidth=" + perWidth);
 
 		progressPaint = new Paint();
 		flashPaint = new Paint();
@@ -116,13 +114,14 @@ public class ProgressView extends View {
 	}
 
 	protected void onDraw(Canvas canvas) {
-//		Log.d("wzy.lifecycle", TAG + ".onDraw() called!");
+		// Log.d("wzy.lifecycle", TAG + ".onDraw() called!");
 		super.onDraw(canvas);
 		progressHeight = getMeasuredHeight();
-//		Log.d("wzy.size", TAG + ".progressHeight=" + progressHeight);
+		// Log.d("wzy.size", TAG + ".progressHeight=" + progressHeight);
 		long curSystemTime = System.currentTimeMillis();
 		countWidth = 0;
-//		Log.d("wzy.logic", TAG + ".timeList.isEmpty()=" + timeList.isEmpty());
+		// Log.d("wzy.logic", TAG + ".timeList.isEmpty()=" +
+		// timeList.isEmpty());
 		if (!timeList.isEmpty()) {
 			long preTime = 0;
 			long curTime = 0;
@@ -171,7 +170,7 @@ public class ProgressView extends View {
 				isVisible = !isVisible;
 				drawFlashTime = System.currentTimeMillis();
 			}
-			if (isVisible){
+			if (isVisible) {
 				canvas.drawRect(countWidth, 0, countWidth + flashWidth,
 						getMeasuredHeight(), flashPaint);
 			}
