@@ -1,0 +1,83 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="20dp"
+        android:text="欢迎使用多媒体行车记录仪"
+        android:textSize="20dp" >
+    </TextView>
+"
+
+    <TextView
+        android:id="@+id/textview1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="请选择所需功能"
+        android:textSize="15dp" />
+
+    <CheckBox
+        android:id="@+id/recorder_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="行车影像记录" />
+
+    <CheckBox
+        android:id="@+id/light_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="开灯提醒" />
+
+    <CheckBox
+        android:id="@+id/light_checkbox_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="25dp"
+        android:text="文本提示" />
+
+    <CheckBox
+        android:id="@+id/light_checkbox_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="25dp"
+        android:text="语音提示" />
+
+    <CheckBox
+        android:id="@+id/overspeed_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="超速提醒" />
+
+    <CheckBox
+        android:id="@+id/overspeed_checkbox_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="25dp"
+        android:text="文本提示" />
+
+    <CheckBox
+        android:id="@+id/overspeed_checkbox_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="25dp"
+        android:text="语音提示" />
+
+    <Button
+        android:id="@+id/confirm_button"
+        android:layout_width="200dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:text="确定" >
+    </Button>
+
+    <com.carrecorder.customer.view.ProgressView
+        android:layout_width="fill_parent"
+        android:layout_height="30dp" />
+
+</LinearLayout>
