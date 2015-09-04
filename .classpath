@@ -5,7 +5,5 @@
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
-	<classpathentry kind="lib" path="G:/github/android/CarRecorder/libs/javacpp.jar"/>
-	<classpathentry kind="lib" path="G:/github/android/CarRecorder/libs/javacv.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
