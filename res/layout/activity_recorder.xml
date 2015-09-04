@@ -17,40 +17,42 @@
         android:textSize="35dp"
         android:textStyle="bold" >
     </TextView>
-    <TextView 
-   android:id="@+id/textview1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"         
-        android:layout_margin="100dp"                
-        android:layout_gravity="center"        
-        android:textSize="40dp"        
-        android:text="" 
-         android:textStyle="bold" />"       
-        <TextView 
-   android:id="@+id/textview2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"  
-       android:layout_centerVertical="true" 
-       android:layout_centerHorizontal="true"
-        android:textSize="40dp"
-        android:text=""
-         android:textStyle="bold"                
-        />"
-        <TextView 
-           android:id="@+id/textview3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"  
-         android:layout_gravity="center"
-         android:layout_margin="168dp" 
-        android:textSize="40dp"
-        android:text=""
-         android:textStyle="bold" />
-        <EditText 
-     android:id="@+id/notice_text"
+
+    <TextView
+        android:id="@+id/timer_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        />  
+        android:layout_gravity="center"
+        android:layout_margin="20dp"
+        android:text=""
+        android:textSize="40dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/light_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:text=""
+        android:textSize="40dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/gps_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="200dp"
+        android:text="speed"
+        android:textSize="40dp" />
+
+    <EditText
+        android:id="@+id/notice_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" 
+        android:gravity="center"
+        />
 
     <LinearLayout
         android:id="@+id/arc_hf_video_btn"
@@ -65,7 +67,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/arc_hf_btn_video_start" />
-
     </LinearLayout>
 
 </RelativeLayout>

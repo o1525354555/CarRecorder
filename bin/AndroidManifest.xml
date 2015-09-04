@@ -5,10 +5,9 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="8"
+        android:minSdkVersion="9"
         android:targetSdkVersion="18" />
 
-    
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -23,19 +22,24 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-         <activity
+        <activity
             android:name="com.carrecorder.activity.RecorderActivity"
-             android:screenOrientation="landscape"
-            android:label="多媒体行车记录仪">
+            android:label="多媒体行车记录仪"
+            android:screenOrientation="landscape" >
         </activity>
     </application>
-<uses-permission android:name = "android.permission.CAMERA" /> 
-<uses-feature android:name = "android.hardware.camera" /> 
-<uses-feature android:name = "android.hardware.camera.autofocus" /> 
- <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/> 
- <uses-permission android:name="android.permission.RECORD_VIDEO"/> 
-<uses-permission android:name="android.permission.RECORD_AUDIO"/> 
-<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
- <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECORD_VIDEO" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
 </manifest>

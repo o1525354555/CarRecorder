@@ -10,7 +10,6 @@ import java.io.OutputStream;
 import myjob.carrecorder.R;
 
 import com.carrecorder.conf.ActivityConf;
-
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Environment;
@@ -25,9 +24,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
-public class PreviewActivity extends Activity {
+public class PreviewActivity extends Activity{
 	private int range1;
 	private int range2;
 	private int range3;
@@ -48,6 +48,7 @@ public class PreviewActivity extends Activity {
 	private CheckBox overspeedCheckBox_1;
 	private CheckBox overspeedCheckBox_2;
 	private Button confirmBtn;
+	private TextView textView;
 
 	private void initView() {
 		recorderCheckBox = (CheckBox) findViewById(R.id.recorder_checkbox);
@@ -62,6 +63,7 @@ public class PreviewActivity extends Activity {
 		lightCheckBox_2.setVisibility(View.GONE);
 		overspeedCheckBox_1.setVisibility(View.GONE);
 		overspeedCheckBox_2.setVisibility(View.GONE);
+		textView = (TextView)findViewById(R.id.textview1);
 	}
 
 	private void initListener() {
@@ -322,5 +324,4 @@ public class PreviewActivity extends Activity {
 		}
 
 	}
-
 }
