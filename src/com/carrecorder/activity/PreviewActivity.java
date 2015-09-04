@@ -6,13 +6,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
+import treeview.adapter.SimpleTreeListViewAdapter;
+import treeview.bean.OrgBean;
 import myjob.carrecorder.R;
 
 import com.carrecorder.conf.ActivityConf;
 import com.carrecorder.db.table.Record;
-import com.carrecorder.utils.db.EntryUtils;
 import com.carrecorder.utils.time.TimeUtil;
 import com.db.DBExecutor;
 import com.db.sql.Sql;
@@ -32,10 +34,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.TextView;
+import android.widget.ListView;
 import android.widget.Toast;
 
-public class PreviewActivity extends Activity{
+public class PreviewActivity extends Activity {
+	// *******************TreeView************************/
+	public ListView mTree;
+	public SimpleTreeListViewAdapter<OrgBean> mAdapter;
+	public List<OrgBean> mDatas2;
+	public int idOfTreeList = 1;
 	private int range1;
 	private int range2;
 	private int range3;
@@ -56,7 +63,6 @@ public class PreviewActivity extends Activity{
 	private CheckBox overspeedCheckBox_1;
 	private CheckBox overspeedCheckBox_2;
 	private Button confirmBtn;
-	private TextView textView;
 
 	private void initView() {
 		recorderCheckBox = (CheckBox) findViewById(R.id.recorder_checkbox);
@@ -71,9 +77,36 @@ public class PreviewActivity extends Activity{
 		lightCheckBox_2.setVisibility(View.GONE);
 		overspeedCheckBox_1.setVisibility(View.GONE);
 		overspeedCheckBox_2.setVisibility(View.GONE);
-		textView = (TextView)findViewById(R.id.textview1);
+		initialTreeView();
 	}
+	private void initialTreeView() {
+		mTree = (ListView)findViewById(R.id.id_listview);
+		initDatas();
+		try {
+			mAdapter = new SimpleTreeListViewAdapter<OrgBean>(mTree, this,
+					mDatas2, 0);
+			mTree.setAdapter(mAdapter);
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
+	}
+	private void initDatas() {
+		mDatas2 = new ArrayList<OrgBean>();
+		
+		OrgBean bean2 = new OrgBean(idOfTreeList, 0, "total");
+		idOfTreeList++;
+		mDatas2.add(bean2);
+		bean2 = new OrgBean(idOfTreeList, 0, "recent");
+		idOfTreeList++;
+		mDatas2.add(bean2);
+		bean2 = new OrgBean(idOfTreeList, 0, "last week");
+		idOfTreeList++;
+		mDatas2.add(bean2);
+		bean2 = new OrgBean(idOfTreeList, 0, "before");
+		idOfTreeList++;
+		mDatas2.add(bean2);
 
+	}
 	private void initListener() {
 		recorderCheckBox
 				.setOnCheckedChangeListener(new RecorderCheckboxListener());
@@ -82,21 +115,22 @@ public class PreviewActivity extends Activity{
 				.setOnCheckedChangeListener(new OverspeedCheckboxListener());
 		confirmBtn.setOnClickListener(new ConfirmBtnListener());
 	}
-	private void initDB() throws IllegalArgumentException, IllegalAccessException
-	{
+
+	private void initDB() throws IllegalArgumentException,
+			IllegalAccessException {
+		double toatal = 0;
 		DBExecutor db;
 		db = DBExecutor.getInstance(this);
-		Sql sql = SqlFactory.deleteAll(Record.class);
-		db.execute(sql);
-		sql = SqlFactory.insert(new Record(10,TimeUtil.getTimeStr()));
-		db.execute(sql);
-		sql = SqlFactory.find(Record.class);
+		Sql sql = SqlFactory.find(Record.class);
 		List<Record> records = db.executeQuery(sql);
-		for (Record sss : records) {
-			String info = EntryUtils.toString(sss);
-			Toast.makeText(this, info, Toast.LENGTH_SHORT).show();
+		for (Record instance : records) {
+			toatal +=instance.getMelige();
+			mAdapter.addExtraNode(1, instance.getMelige()+"m  "+instance.getDate());
 		}
+		mAdapter.addExtraNode(0,"total:"+toatal+""+" m");
+		sql = SqlFactory.find(Record.class, "count(*) as num");
 	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

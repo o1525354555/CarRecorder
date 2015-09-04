@@ -24,31 +24,38 @@ public final class R {
         public static final int arc_hf_btn_video_start=0x7f020000;
         public static final int arc_hf_btn_video_stop=0x7f020001;
         public static final int ic_launcher=0x7f020002;
+        public static final int touchup_bg=0x7f020003;
+        public static final int tree_ec=0x7f020004;
+        public static final int tree_ex=0x7f020005;
     }
     public static final class id {
-        public static final int action_settings=0x7f080012;
-        public static final int arc_hf_video_btn=0x7f080010;
-        public static final int arc_hf_video_start=0x7f080011;
+        public static final int action_settings=0x7f080015;
+        public static final int arc_hf_video_btn=0x7f080011;
+        public static final int arc_hf_video_start=0x7f080012;
         public static final int confirm_button=0x7f080009;
-        public static final int gps_textview=0x7f08000e;
+        public static final int gps_textview=0x7f08000f;
+        public static final int id_item_icon=0x7f080013;
+        public static final int id_item_text=0x7f080014;
+        public static final int id_listview=0x7f08000a;
         public static final int light_checkbox=0x7f080003;
         public static final int light_checkbox_1=0x7f080004;
         public static final int light_checkbox_2=0x7f080005;
-        public static final int light_textview=0x7f08000d;
-        public static final int notice_text=0x7f08000f;
+        public static final int light_textview=0x7f08000e;
+        public static final int notice_text=0x7f080010;
         public static final int overspeed_checkbox=0x7f080006;
         public static final int overspeed_checkbox_1=0x7f080007;
         public static final int overspeed_checkbox_2=0x7f080008;
         public static final int recorder_checkbox=0x7f080002;
-        public static final int surface_camera=0x7f08000a;
+        public static final int surface_camera=0x7f08000b;
         public static final int textview1=0x7f080001;
-        public static final int timer=0x7f08000b;
-        public static final int timer_textview=0x7f08000c;
+        public static final int timer=0x7f08000c;
+        public static final int timer_textview=0x7f08000d;
         public static final int title=0x7f080000;
     }
     public static final class layout {
         public static final int activity_preview=0x7f030000;
         public static final int activity_recorder=0x7f030001;
+        public static final int list_item=0x7f030002;
     }
     public static final class menu {
         public static final int main=0x7f070000;

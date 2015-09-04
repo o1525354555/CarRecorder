@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.carrecorder.utils.debug.Log;
+
 import android.media.MediaRecorder;
 import android.os.Environment;
 import android.view.SurfaceHolder;
@@ -69,7 +71,9 @@ public class CameraUtils {
 	}
 
 	public static MediaRecorder stopRecord(MediaRecorder mMediaRecorder) {
+		Log.logAL("stop");
 		mMediaRecorder.stop();
+		Log.logAL("release");
 		mMediaRecorder.release();
 		mMediaRecorder = null;
 		return mMediaRecorder;

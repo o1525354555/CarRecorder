@@ -3,7 +3,8 @@ package treeview.utils;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import com.example.fender.R;
+
+import myjob.carrecorder.R;
 import android.util.Log;
 import treeview.utils.annotation.TreeNodeId;
 import treeview.utils.annotation.TreeNodeLabel;
@@ -12,7 +13,7 @@ import treeview.utils.annotation.TreeNodePid;
 public class TreeHelper
 {
 	/**
-	 * 将用户的数据转化为树形数�?
+	 * 将用户的数据转化为树形数�?
 	 * 
 	 * @param datas
 	 * @return
@@ -93,7 +94,7 @@ public class TreeHelper
 	{
 		List<Node> result = new ArrayList<Node>();
 		List<Node> nodes = convertDatas2Nodes(datas);
-		// 获得树的根结�?
+		// 获得树的根结�?
 		List<Node> rootNodes = getRootNodes(nodes);
 
 		for (Node node : rootNodes)
@@ -106,7 +107,7 @@ public class TreeHelper
 	}
 
 	/**
-	 * 把一个节点的�?有孩子节点都放入result
+	 * 把一个节点的�?有孩子节点都放入result
 	 * 
 	 * @param result
 	 * @param node

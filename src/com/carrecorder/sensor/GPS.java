@@ -21,10 +21,51 @@ public class GPS {
 	private Vector<GPSListener> gpsListeners = new Vector<GPSListener>();
 	private Activity activity;
 	private LocationManager locationManager;
+	private Location location;
+	private double dist;
 
 	public GPS(Activity activity) {
 		this.activity = activity;
 		getLocation();
+		dist = 0;
+	}
+
+	public double getSpeed() {
+		if(location!=null)
+		{
+			return location.getSpeed();			
+		}
+		return 0;
+	}
+
+	public double getDist() {
+		return dist;
+	}
+
+	public void updateDist(Location location) {
+		if (this.location == null) {
+			this.location = location;
+			return;
+		}
+		double lat1 = this.location.getLatitude();
+		double lat2 = location.getLatitude();
+		double log1 = this.location.getLongitude();
+		double log2 = location.getLongitude();
+		double R = 6378137.0;
+		double ns1 = (lat1 * Math.PI / 180.0);
+		double ns2 = (lat2 * Math.PI / 180.0);
+		double ew1 = (log1 * Math.PI / 180.0);
+		double ew2 = (log2 * Math.PI / 180.0);
+		double dew = ew1 - ew2;
+		if (dew > Math.PI) {
+			dew = 2 * Math.PI - dew;
+		} else if (dew < -Math.PI) {
+			dew = 2 * Math.PI + dew;
+		}
+		double dx = R * Math.cos(ns1) * dew;
+		double dy = R * (ns1 - ns2);
+		dist = Math.sqrt(dx * dx + dy * dy) + dist;
+		this.location = location;
 	}
 
 	public void addListeners(GPSListener gpsListener) {
@@ -65,8 +106,8 @@ public class GPS {
 		}
 		locationManager.addGpsStatusListener(listener);
 		// 设置监听器，自动更新的最小时间为间隔N秒(1秒为1*1000，这样写主要为了方便)或最小位移变化超过N米
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 500, 1,
-				new LocationListener() {
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+				500, 1, new LocationListener() {
 
 					@Override
 					public void onStatusChanged(String arg0, int arg1,
@@ -97,7 +138,7 @@ public class GPS {
 
 	private Criteria getCriteria() {
 		Criteria criteria = new Criteria();
-		criteria.setAccuracy(Criteria.ACCURACY_FINE); // 高精度
+		criteria.setAccuracy(Criteria.ACCURACY_COARSE); // 高精度
 		criteria.setAltitudeRequired(false);
 		criteria.setBearingRequired(false);
 		criteria.setCostAllowed(true);

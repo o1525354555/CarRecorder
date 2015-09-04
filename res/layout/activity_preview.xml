@@ -11,9 +11,7 @@
         android:layout_gravity="center"
         android:layout_margin="20dp"
         android:text="欢迎使用多媒体行车记录仪"
-        android:textSize="20dp" >
-    </TextView>
-"
+        android:textSize="20dp" />
 
     <TextView
         android:id="@+id/textview1"
@@ -76,8 +74,12 @@
         android:text="确定" >
     </Button>
 
-    <com.carrecorder.customer.view.ProgressView
+    <ListView
+        android:id="@+id/id_listview"
         android:layout_width="fill_parent"
-        android:layout_height="30dp" />
+        android:layout_height="0dp"
+        android:layout_weight="3"
+        android:cacheColorHint="#ffffff" >
+    </ListView>
 
 </LinearLayout>

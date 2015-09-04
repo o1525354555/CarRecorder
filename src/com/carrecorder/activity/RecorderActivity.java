@@ -8,12 +8,16 @@ import java.util.TimerTask;
 
 import com.carrecorder.conf.ActivityConf;
 import com.carrecorder.conf.EnvConf;
+import com.carrecorder.db.table.Record;
 import com.carrecorder.sensor.GPS;
 import com.carrecorder.sensor.GPSListener;
+import com.carrecorder.utils.Common;
 import com.carrecorder.utils.camera.CameraUtils;
 import com.carrecorder.utils.debug.Log;
+import com.carrecorder.utils.time.TimeUtil;
 import com.db.DBExecutor;
 import com.db.sql.Sql;
+import com.db.sql.SqlFactory;
 
 import myjob.carrecorder.R;
 import android.app.Activity;
@@ -101,6 +105,7 @@ public class RecorderActivity extends Activity implements GPSListener {
 	private BrightnessManager brightnessManager;
 	private DBExecutor dbExecutor;
 	private Sql sql;
+
 	private void initView() {
 		// to full screen show
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -150,8 +155,10 @@ public class RecorderActivity extends Activity implements GPSListener {
 		// set buffer path
 		mRecVedioPath = new File(Environment.getExternalStorageDirectory()
 				.getAbsolutePath() + "/hfdatabase/video/temp/");
-		Toast.makeText(this,Environment.getExternalStorageDirectory()
-				.getAbsolutePath() + "/hfdatabase/video/temp/" , Toast.LENGTH_LONG).show();
+		Toast.makeText(
+				this,
+				Environment.getExternalStorageDirectory().getAbsolutePath()
+						+ "/hfdatabase/video/temp/", Toast.LENGTH_LONG).show();
 		if (!mRecVedioPath.exists()) {
 			mRecVedioPath.mkdirs();
 		}
@@ -172,6 +179,8 @@ public class RecorderActivity extends Activity implements GPSListener {
 		brightnessManager = new BrightnessManager();
 		brightnessManager.keepAwake();
 		dbExecutor = DBExecutor.getInstance(this);
+		or = 1;
+		voiceToast();
 	}
 
 	@Override
@@ -247,8 +256,8 @@ public class RecorderActivity extends Activity implements GPSListener {
 			if (100 * m <= k) {
 				timerTextView.setVisibility(View.GONE);
 				lightTextView.setVisibility(View.GONE);
-//				Toast.makeText(getApplicationContext(),
-//						EnvConf.NOTICE_GOOD_LIGHT, Toast.LENGTH_LONG).show();
+				// Toast.makeText(getApplicationContext(),
+				// EnvConf.NOTICE_GOOD_LIGHT, Toast.LENGTH_LONG).show();
 			}
 
 			k = 0;
@@ -295,9 +304,17 @@ public class RecorderActivity extends Activity implements GPSListener {
 						}
 					}
 					bitmapNew.recycle();
-					System.out.println("m=" + m);
-					System.out.println("k=" + k);
-					if (50 * m <= k && 100 * m >= k) {
+					if (120 * m <= k) {
+						timerTextView.setVisibility(View.GONE);
+						lightTextView.setVisibility(View.GONE);
+						Toast.makeText(getApplicationContext(),
+								EnvConf.NOTICE_GOOD_LIGHT, Toast.LENGTH_LONG)
+								.show();
+						k = 0;
+						m = 0;
+						return;
+					}
+					if (k >= 70 * m && k <= 100 * m) {
 						if (rank2_1 == isChoice) {
 							timerTextView.setText(EnvConf.NOTICE_WEAK_LIGHT_1);
 							timerTextView.setVisibility(View.VISIBLE);
@@ -309,7 +326,7 @@ public class RecorderActivity extends Activity implements GPSListener {
 							voiceToast();
 						}
 					}
-					if (50 * m >= k) {
+					if (k <= 40 * m) {
 						if (rank2_1 == isChoice) {
 							lightTextView
 									.setText(EnvConf.NOTICE_WEAK_LIGHT_2_MUTIL_LINE);
@@ -323,14 +340,6 @@ public class RecorderActivity extends Activity implements GPSListener {
 							voiceToast();
 						}
 					}
-					if (100 * m <= k) {
-						timerTextView.setVisibility(View.GONE);
-						lightTextView.setVisibility(View.GONE);
-						Toast.makeText(getApplicationContext(),
-								EnvConf.NOTICE_GOOD_LIGHT, Toast.LENGTH_LONG)
-								.show();
-					}
-
 					k = 0;
 					m = 0;
 				}
@@ -348,28 +357,27 @@ public class RecorderActivity extends Activity implements GPSListener {
 			Intent intent2 = getIntent();
 			final int rank3_1 = intent2.getIntExtra("range3_1", 0);
 			final int rank3_2 = intent2.getIntExtra("range3_2", 0);
-			// if (speed >= 1) {
-			// range = 3;
-			// if (rank3_2 == isChoice) {
-			// voiceToast();
-			// }
-			// if (rank3_1 == isChoice) {
-			// gpsTextView
-			// .setText(EnvConf.NOTICE_SLOWDOWN_SEPPD);
-			// gpsTextView.setTextColor(Color.YELLOW);
-			// sparkBackground();
-			// }
-			// } else {
-			// if (rank3_1 == isChoice) {
-			// Toast.makeText(getApplicationContext(),
-			// "车速正常" + speed + "m/s",
-			// Toast.LENGTH_LONG).show();
-			// }
-			// }
-			// }
-			// });
+			if (gps != null) {
+				double speed = gps.getSpeed();
+				if (speed >= 1) {
+					range = 3;
+					if (rank3_2 == isChoice) {
+						voiceToast();
+					}
+					if (rank3_1 == isChoice) {
+						// gpsTextView.setText(EnvConf.NOTICE_SLOWDOWN_SEPPD);
+						// gpsTextView.setTextColor(Color.YELLOW);
+						// sparkBackground();
+					}
+				} else {
+					if (rank3_1 == isChoice) {
+						// Toast.makeText(getApplicationContext(),
+						// "车速正常" + speed + "m/s", Toast.LENGTH_LONG).show();
+					}
+					symbol2 = true;
+				}
+			}
 
-			symbol2 = true;
 		}
 	};
 
@@ -390,10 +398,11 @@ public class RecorderActivity extends Activity implements GPSListener {
 					float[] values = event.values;
 					if (values[0] <= 50 && values[0] > 10) {
 						if (rank2_1 == isChoice) {
-							timerTextView.setText(EnvConf.NOTICE_WEAK_LIGHT_1);
-							timerTextView.setVisibility(View.VISIBLE);
-							timerTextView.setTextColor(Color.YELLOW);
-							lightTextView.setVisibility(View.GONE);
+							lightTextView.setText(EnvConf.NOTICE_WEAK_LIGHT_1);
+							lightTextView.setVisibility(View.VISIBLE);
+							lightTextView.setTextColor(Color.DKGRAY);
+							lightTextView.setBackground(getResources()
+									.getDrawable(R.drawable.touchup_bg));
 						}
 						range = 1;
 						if (rank2_2 == isChoice) {
@@ -406,7 +415,6 @@ public class RecorderActivity extends Activity implements GPSListener {
 									.setText(EnvConf.NOTICE_WEAK_LIGHT_1_MUTIL_LINE);
 							lightTextView.setVisibility(View.VISIBLE);
 							lightTextView.setTextColor(Color.YELLOW);
-							timerTextView.setVisibility(View.GONE);
 							sparkBackground();
 						}
 						range = 2;
@@ -495,9 +503,7 @@ public class RecorderActivity extends Activity implements GPSListener {
 							public void onClick(DialogInterface dialog,
 									int whichButton) {
 								if (mMediaRecorder != null) {
-									mMediaRecorder.stop();
-									mMediaRecorder.release();
-									mMediaRecorder = null;
+									CameraUtils.stopRecord(mMediaRecorder);
 									CameraUtils.videoRename(mRecAudioFile,
 											whichButton);
 								}
@@ -518,13 +524,19 @@ public class RecorderActivity extends Activity implements GPSListener {
 		handler4.removeCallbacks(task4);
 		brightnessManager.releaseAwake();
 	}
+
 	@Override
 	protected void onResume() {
 		super.onResume();
 		brightnessManager.keepAwake();
 	}
+
 	public void voiceToast() {
 		final EditText noticeText = (EditText) findViewById(R.id.notice_text);
+		if(text2speech.isSpeaking())
+		{
+			return;
+		}
 		if (range == isChoice) {
 			noticeText.setText(EnvConf.NOTICE_WEAK_LIGHT_1);
 			noticeText.setVisibility(View.GONE);
@@ -535,7 +547,6 @@ public class RecorderActivity extends Activity implements GPSListener {
 					EnvConf.AUDIO_PATH_WEAK_LIGHT_1);
 			text2speech.speak(str, TextToSpeech.QUEUE_FLUSH, null);
 		} else if (range == 2) {
-
 			noticeText.setText(EnvConf.NOTICE_WEAK_LIGHT_2);
 			noticeText.setVisibility(View.GONE);
 			String str;
@@ -554,7 +565,7 @@ public class RecorderActivity extends Activity implements GPSListener {
 					EnvConf.AUDIO_PATH_SLOW_SPEED);
 			text2speech.speak(str, TextToSpeech.QUEUE_FLUSH, null);
 		}
-		if (or == isChoice) {
+		if (or == 1) {
 			noticeText.setText(EnvConf.NOTICE_TUTORIAL_1);
 			noticeText.setVisibility(View.GONE);
 			String str;
@@ -573,7 +584,10 @@ public class RecorderActivity extends Activity implements GPSListener {
 			text2speech.addSpeech(EnvConf.NOTICE_TUTORIAL_2,
 					EnvConf.AUDIO_PATH_NOTICE_2);
 			text2speech.speak(str, TextToSpeech.QUEUE_FLUSH, null);
+			
 		}
+		range=0;
+		or=0;
 	}
 
 	public void sparkBackground() {
@@ -703,6 +717,8 @@ public class RecorderActivity extends Activity implements GPSListener {
 					isRecording = !isRecording;
 					gps.addListeners(RecorderActivity.this);
 					brightnessManager.setBrightness(255);
+					or = 2;
+					voiceToast();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -710,24 +726,28 @@ public class RecorderActivity extends Activity implements GPSListener {
 				/*
 				 * Click to stop recode
 				 */
-				Log.logAL("record pause");
 				try {
 					bool = false;
 					f = 100f;
 					setBrightness(f);
 					timer.setText(format(hour) + ":" + format(minute) + ":"
 							+ format(second));
-					// text2speech.shutdown();
+					text2speech.shutdown();
 					mMediaRecorder = CameraUtils.stopRecord(mMediaRecorder);
 					CameraUtils.videoRename(mRecAudioFile, parentId);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				isRecording = !isRecording;
-				gps.removeListeners(RecorderActivity.this);
-				mVideoStartBtn
-						.setBackgroundResource(R.drawable.arc_hf_btn_video_start);
 				try {
+					isRecording = !isRecording;
+					gps.removeListeners(RecorderActivity.this);
+					if (gps.getDist() != 0) {
+						Sql sql = SqlFactory.insert(new Record((int) gps
+								.getDist(), TimeUtil.getTimeStr()));
+						dbExecutor.execute(sql);
+					}
+					mVideoStartBtn
+							.setBackgroundResource(R.drawable.arc_hf_btn_video_start);
 					cameraDevice = CameraUtils.openCamera(cameraDevice,
 							mSurfaceHolder);
 					isPreview = true;
@@ -742,38 +762,49 @@ public class RecorderActivity extends Activity implements GPSListener {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		CameraUtils.stopCamera(cameraDevice);
+		if (cameraDevice != null)
+			CameraUtils.stopCamera(cameraDevice);
 		brightnessManager.releaseAwake();
 	}
+
 	@Override
 	protected void onStop() {
 		// TODO Auto-generated method stub
 		super.onStop();
 		brightnessManager.releaseAwake();
 	}
+
 	@Override
 	public void GPS_receiver(Location location) {
-		gpsTextView.setText(location.getSpeed() + "m/s");
+		gps.updateDist(location);
+		gpsTextView.setText(Common.formatDouble(location.getSpeed()) + "m/s"
+				+ "\n" + "Dist:" + Common.formatDouble(gps.getDist()) + "\n"
+				+ "方向" + location.getBearing() + "\n" + "经度"
+				+ location.getLatitude() + "\n" + "纬度"
+				+ location.getLongitude());
 		gpsTextView.setTextColor(Color.YELLOW);
+
 	}
 
 	class BrightnessManager {
 		private PowerManager.WakeLock mWakeLock;
+
 		public BrightnessManager() {
 			PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-			mWakeLock = pm.newWakeLock(
-					PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
+			mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK,
+					"My Tag");
 		}
-		public void keepAwake()
-		{
+
+		public void keepAwake() {
 			// onResume() 中调用：
-			mWakeLock.acquire(); 
+			mWakeLock.acquire();
 		}
-		public void releaseAwake()
-		{
-			//  onPause() 中调用释放WakeLock对象
+
+		public void releaseAwake() {
+			// onPause() 中调用释放WakeLock对象
 			mWakeLock.release();
 		}
+
 		public void setBrightness(int level) {
 			ContentResolver cr = getContentResolver();
 			Settings.System.putInt(cr, "screen_brightness", level);

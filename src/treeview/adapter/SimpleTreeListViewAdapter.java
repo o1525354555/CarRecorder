@@ -2,8 +2,8 @@ package treeview.adapter;
 
 import java.util.List;
 
-import com.example.fender.R;
 
+import myjob.carrecorder.R;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,7 +64,7 @@ public class SimpleTreeListViewAdapter<T> extends TreeListViewAdapter<T>
 	}
 
 	/**
-	 * 动�?�插入节�?
+	 * 动�?�插入节�?
 	 * 
 	 * @param position
 	 * @param string
