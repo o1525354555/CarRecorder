@@ -12,6 +12,8 @@ import com.carrecorder.sensor.GPS;
 import com.carrecorder.sensor.GPSListener;
 import com.carrecorder.utils.camera.CameraUtils;
 import com.carrecorder.utils.debug.Log;
+import com.db.DBExecutor;
+import com.db.sql.Sql;
 
 import myjob.carrecorder.R;
 import android.app.Activity;
@@ -83,7 +85,6 @@ public class RecorderActivity extends Activity implements GPSListener {
 	private int range;// the flag for notice text
 	private int k = 0;
 	private int m = 0;
-	private LocationManager lm;
 	private SensorEventListener sensorEventListener;
 	float speed;
 	double lat;
@@ -98,7 +99,8 @@ public class RecorderActivity extends Activity implements GPSListener {
 	private final int isChoice = 1;
 	private GPS gps;
 	private BrightnessManager brightnessManager;
-
+	private DBExecutor dbExecutor;
+	private Sql sql;
 	private void initView() {
 		// to full screen show
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -169,6 +171,7 @@ public class RecorderActivity extends Activity implements GPSListener {
 		gps = new GPS(this);
 		brightnessManager = new BrightnessManager();
 		brightnessManager.keepAwake();
+		dbExecutor = DBExecutor.getInstance(this);
 	}
 
 	@Override
@@ -742,7 +745,12 @@ public class RecorderActivity extends Activity implements GPSListener {
 		CameraUtils.stopCamera(cameraDevice);
 		brightnessManager.releaseAwake();
 	}
-
+	@Override
+	protected void onStop() {
+		// TODO Auto-generated method stub
+		super.onStop();
+		brightnessManager.releaseAwake();
+	}
 	@Override
 	public void GPS_receiver(Location location) {
 		gpsTextView.setText(location.getSpeed() + "m/s");
@@ -769,11 +777,6 @@ public class RecorderActivity extends Activity implements GPSListener {
 		public void setBrightness(int level) {
 			ContentResolver cr = getContentResolver();
 			Settings.System.putInt(cr, "screen_brightness", level);
-//			try {
-//				defaultLevel = Settings.System.getInt(cr, "screen_brightness");
-//			} catch (SettingNotFoundException e) {
-//				e.printStackTrace();
-//			}
 			Window window = getWindow();
 			LayoutParams attributes = window.getAttributes();
 			float flevel = level;

@@ -6,10 +6,18 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
 
 import myjob.carrecorder.R;
 
 import com.carrecorder.conf.ActivityConf;
+import com.carrecorder.db.table.Record;
+import com.carrecorder.utils.db.EntryUtils;
+import com.carrecorder.utils.time.TimeUtil;
+import com.db.DBExecutor;
+import com.db.sql.Sql;
+import com.db.sql.SqlFactory;
+
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Environment;
@@ -74,7 +82,21 @@ public class PreviewActivity extends Activity{
 				.setOnCheckedChangeListener(new OverspeedCheckboxListener());
 		confirmBtn.setOnClickListener(new ConfirmBtnListener());
 	}
-
+	private void initDB() throws IllegalArgumentException, IllegalAccessException
+	{
+		DBExecutor db;
+		db = DBExecutor.getInstance(this);
+		Sql sql = SqlFactory.deleteAll(Record.class);
+		db.execute(sql);
+		sql = SqlFactory.insert(new Record(10,TimeUtil.getTimeStr()));
+		db.execute(sql);
+		sql = SqlFactory.find(Record.class);
+		List<Record> records = db.executeQuery(sql);
+		for (Record sss : records) {
+			String info = EntryUtils.toString(sss);
+			Toast.makeText(this, info, Toast.LENGTH_SHORT).show();
+		}
+	}
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -85,6 +107,15 @@ public class PreviewActivity extends Activity{
 		str5 = Environment.getExternalStorageDirectory().getAbsolutePath()
 				+ "/Android/";
 		CopyAssets(str4, str5);
+		try {
+			initDB();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private void CopyAssets(String assetDir, String dir) {
