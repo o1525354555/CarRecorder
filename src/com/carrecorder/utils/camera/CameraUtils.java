@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.carrecorder.utils.debug.Log;
+import com.carrecorder.utils.time.TimeUtil;
 
 import android.media.MediaRecorder;
 import android.os.Environment;
@@ -61,13 +62,14 @@ public class CameraUtils {
 		return camera;
 	}
 
-	public static void startRecord(MediaRecorder mMediaRecorder,
+	public static File startRecord(MediaRecorder mMediaRecorder,
 			File mRecVedioPath) throws IOException {
 		File mRecAudioFile = File
-				.createTempFile("Vedio", ".3gp", mRecVedioPath);
+				.createTempFile("Video"+TimeUtil.getTimeStr(), ".3gp", mRecVedioPath);
 		mMediaRecorder.setOutputFile(mRecAudioFile.getAbsolutePath());
 		mMediaRecorder.prepare();
 		mMediaRecorder.start();// start record
+		return mRecAudioFile;
 	}
 
 	public static MediaRecorder stopRecord(MediaRecorder mMediaRecorder) {
@@ -83,18 +85,23 @@ public class CameraUtils {
 	 * 生成video文件名字 creates the name of video file
 	 */
 	public static void videoRename(File mRecAudioFile, int parentId) {
-		String path = Environment.getExternalStorageDirectory()
-				.getAbsolutePath()
-				+ "/hfdatabase/video/"
-				+ String.valueOf(parentId) + "/";
-		String fileName = new SimpleDateFormat("yyyyMMddHHmmss")
-				.format(new Date()) + ".3gp";
-		File out = new File(path);
-		if (!out.exists()) {
-			out.mkdirs();
-		}
-		out = new File(path, fileName);
-		if (mRecAudioFile.exists())
-			mRecAudioFile.renameTo(out);
+//		String path = Environment.getExternalStorageDirectory()
+//				.getAbsolutePath()
+//				+ "/hfdatabase/video/"
+//				+ String.valueOf(parentId) + "/";
+//		String fileName = new SimpleDateFormat("yyyyMMddHHmmss")
+//				.format(new Date()) + ".3gp";
+//		File out = new File(path);
+//		if (!out.exists()) {
+//			out.mkdirs();
+//		}
+//		out = new File(path, fileName);
+//		if (mRecAudioFile.exists())
+//			mRecAudioFile.renameTo(out);
+	}
+	public static void delTempVideo(File mFileForSave) {
+		if(mFileForSave.exists()&&mFileForSave.isFile())
+			mFileForSave.delete();
+		Log.logAL(mFileForSave.getPath());
 	}
 }

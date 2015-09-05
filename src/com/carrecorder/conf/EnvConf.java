@@ -17,4 +17,7 @@ public class EnvConf {
 	public static final String NOTICE_GOOD_LIGHT = "光线良好";
 	public static final String NOTICE_TUTORIAL_1 = "点击右侧按钮开始记录";
 	public static final String NOTICE_TUTORIAL_2 = "开始监测";
+	public static final int WEAK_LIGHT_1=1;
+	public static final int WEAK_LIGHT_2=2;
+	public static final int SLOW_DOWN=3;
 }

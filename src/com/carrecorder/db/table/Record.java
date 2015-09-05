@@ -8,13 +8,21 @@ import com.db.annotations.Table;
 public class Record {
 	@Id(autoIncrement = true)
 	private int id;
-	public Record(int melige, String date) {
+	public Record(int melige, String date,String videoName) {
 		super();
 		this.melige = melige;
 		this.date = date;
+		this.videoName = videoName;
 	}
 	private int melige;
 	private String date;
+	private String videoName;
+	public String getVideoName() {
+		return videoName;
+	}
+	public void setVideoName(String videoName) {
+		this.videoName = videoName;
+	}
 	public int getId() {
 		return id;
 	}

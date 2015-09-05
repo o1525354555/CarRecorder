@@ -8,19 +8,26 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import treeview.adapter.SimpleTreeListViewAdapter;
 import treeview.bean.OrgBean;
+import treeview.utils.Node;
+import treeview.utils.adapter.TreeListViewAdapter.OnTreeNodeClickListener;
 import myjob.carrecorder.R;
 
 import com.carrecorder.conf.ActivityConf;
 import com.carrecorder.db.table.Record;
+import com.carrecorder.utils.Common;
 import com.carrecorder.utils.time.TimeUtil;
 import com.db.DBExecutor;
 import com.db.sql.Sql;
 import com.db.sql.SqlFactory;
 
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
@@ -63,6 +70,36 @@ public class PreviewActivity extends Activity {
 	private CheckBox overspeedCheckBox_1;
 	private CheckBox overspeedCheckBox_2;
 	private Button confirmBtn;
+	private Vector<Record> showedRecords;
+
+	// *********************TreeView*******************//
+	private void initEvent() {
+		mAdapter.setOnTreeNodeClickListener(new OnTreeNodeClickListener() {
+			@Override
+			public void onClick(Node node, int position) {
+				if (node.isLeaf() && node.getName().length() > 20) {
+//					String str = node.getName();
+//					str = str.substring(str.length() - 19);
+					String str=Common.regularStr(node.getName(), "<([^<]*)>").replaceAll("<","").replaceAll(">", "");
+					String path = Environment.getExternalStorageDirectory()
+							.getAbsolutePath() + "/CarRecorder/video/" + str;
+					File testFile = new File(path);
+					if (!testFile.exists()) {
+						Toast.makeText(PreviewActivity.this, "没有找到视频文件耶",
+								Toast.LENGTH_SHORT).show();
+						return;
+					}
+					Intent intent = new Intent(Intent.ACTION_VIEW);
+					String type = "video/3gp";
+					Uri uri = Uri.parse("file:///sdcard/CarRecorder/video/"
+							+ str);
+					intent.setDataAndType(uri, type);
+					startActivity(intent);
+
+				}
+			}
+		});
+	}
 
 	private void initView() {
 		recorderCheckBox = (CheckBox) findViewById(R.id.recorder_checkbox);
@@ -78,9 +115,11 @@ public class PreviewActivity extends Activity {
 		overspeedCheckBox_1.setVisibility(View.GONE);
 		overspeedCheckBox_2.setVisibility(View.GONE);
 		initialTreeView();
+		initEvent();
 	}
+
 	private void initialTreeView() {
-		mTree = (ListView)findViewById(R.id.id_listview);
+		mTree = (ListView) findViewById(R.id.id_listview);
 		initDatas();
 		try {
 			mAdapter = new SimpleTreeListViewAdapter<OrgBean>(mTree, this,
@@ -90,9 +129,10 @@ public class PreviewActivity extends Activity {
 			e.printStackTrace();
 		}
 	}
+
 	private void initDatas() {
 		mDatas2 = new ArrayList<OrgBean>();
-		
+
 		OrgBean bean2 = new OrgBean(idOfTreeList, 0, "total");
 		idOfTreeList++;
 		mDatas2.add(bean2);
@@ -107,6 +147,7 @@ public class PreviewActivity extends Activity {
 		mDatas2.add(bean2);
 
 	}
+
 	private void initListener() {
 		recorderCheckBox
 				.setOnCheckedChangeListener(new RecorderCheckboxListener());
@@ -123,17 +164,26 @@ public class PreviewActivity extends Activity {
 		db = DBExecutor.getInstance(this);
 		Sql sql = SqlFactory.find(Record.class);
 		List<Record> records = db.executeQuery(sql);
+		// 删除
+		// String str = SqlFactory.dropTable(Record.class);
+		// sql = SqlFactory.makeSql(Record.class, str);
+		// db.execute(sql);
 		for (Record instance : records) {
-			toatal +=instance.getMelige();
-			mAdapter.addExtraNode(1, instance.getMelige()+"m  "+instance.getDate());
+			showedRecords.add(instance);
+			toatal += instance.getMelige();
+			mAdapter.addExtraNode(1,
+					instance.getMelige() + "m" + instance.getDate() + "|<"
+							+ instance.getVideoName()+">");
+			
 		}
-		mAdapter.addExtraNode(0,"total:"+toatal+""+" m");
+		mAdapter.addExtraNode(0, "total:" + toatal + "" + " m ");
 		sql = SqlFactory.find(Record.class, "count(*) as num");
 	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		showedRecords = new Vector<Record>();
 		setContentView(R.layout.activity_preview);
 		initView();
 		initListener();
@@ -389,4 +439,38 @@ public class PreviewActivity extends Activity {
 		}
 
 	}
+
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		try {
+			initialTreeView();
+			initEvent();
+			initDB();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	@Override
+	protected void onRestart() {
+		// TODO Auto-generated method stub
+		super.onRestart();
+		try {
+			initialTreeView();
+			initEvent();
+			initDB();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 }
