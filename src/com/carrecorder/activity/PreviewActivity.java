@@ -9,19 +9,18 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import treeview.adapter.SimpleTreeListViewAdapter;
 import treeview.bean.OrgBean;
 import treeview.utils.Node;
 import treeview.utils.adapter.TreeListViewAdapter.OnTreeNodeClickListener;
+import treeview.utils.adapter.TreeListViewAdapter.OnTreeNodeLongClickListener;
 import myjob.carrecorder.R;
 
 import com.carrecorder.conf.ActivityConf;
 import com.carrecorder.db.table.Record;
 import com.carrecorder.utils.Common;
-import com.carrecorder.utils.time.TimeUtil;
+import com.carrecorder.utils.camera.CameraUtils;
 import com.db.DBExecutor;
 import com.db.sql.Sql;
 import com.db.sql.SqlFactory;
@@ -31,6 +30,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -38,6 +38,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -59,8 +60,8 @@ public class PreviewActivity extends Activity {
 	private int range2_2;
 	private int range3_1;
 	private int range3_2;
-	
-	//String for notice text
+
+	// String for notice text
 	private String str1;
 	private String str2;
 	private String str3;
@@ -79,19 +80,71 @@ public class PreviewActivity extends Activity {
 
 	// other
 	private Vector<Record> showedRecords;
+	private String videoPath;
+	private String videoName;
+	private DBExecutor db;
+	
 
 	// *********************TreeView*******************//
 	private void initEvent() {
+		mAdapter.setOnTreeNodeLongClickListener(new OnTreeNodeLongClickListener() {
+
+			@Override
+			public void onLongClick(Node node, int position) {
+				if(node.getName().length()<20)
+				{
+					return ;
+				}
+				videoName = getVideoName(node);
+				videoPath = getVideoPath(node);
+				new AlertDialog.Builder(PreviewActivity.this)
+				.setMessage("删除记录"+videoName+"?")
+				.setNegativeButton("取消",
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+							}
+						})
+				.setPositiveButton("确定",
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog,
+									int whichButton) {
+								if(!CameraUtils.delFile(new File(videoPath)))
+								{
+									Toast.makeText(PreviewActivity.this, "没有找到该文件",Toast.LENGTH_SHORT ).show();									
+								}else
+								{
+									Toast.makeText(PreviewActivity.this, "已删除视频："+videoName,Toast.LENGTH_SHORT ).show();			
+								}
+								Sql sql = new SqlFactory().makeSql(Record.class,"delete from Record where videoName = '"+videoName+"'");
+								db.execute(sql);
+								Toast.makeText(PreviewActivity.this, "已删除文字记录。",Toast.LENGTH_SHORT ).show();									
+								initialTreeView();
+								initEvent();
+								try {
+									initDB();
+								} catch (IllegalArgumentException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								} catch (IllegalAccessException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+							}
+						}).show();
+			}
+			
+		});
 		mAdapter.setOnTreeNodeClickListener(new OnTreeNodeClickListener() {
+			@SuppressLint("SdCardPath")
 			@Override
 			public void onClick(Node node, int position) {
 				if (node.isLeaf() && node.getName().length() > 20) {
 					// String str = node.getName();
 					// str = str.substring(str.length() - 19);
-					String str = Common.regularStr(node.getName(), "<([^<]*)>")
-							.replaceAll("<", "").replaceAll(">", "");
-					String path = Environment.getExternalStorageDirectory()
-							.getAbsolutePath() + "/CarRecorder/video/" + str;
+					String str = getVideoName(node);
+					String path = getVideoPath(node);
 					File testFile = new File(path);
 					if (!testFile.exists()) {
 						Toast.makeText(PreviewActivity.this, "没有找到视频文件耶",
@@ -110,6 +163,17 @@ public class PreviewActivity extends Activity {
 		});
 	}
 
+	private String getVideoName(Node node) {
+		return Common.regularStr(node.getName(), "<([^<]*)>")
+				.replaceAll("<", "").replaceAll(">", "");
+	}
+	private String getVideoPath(Node node)
+	{
+		String str = getVideoName(node);
+		String path = Environment.getExternalStorageDirectory()
+				.getAbsolutePath() + "/CarRecorder/video/" + str;
+		return path;
+	}
 	private void initView() {
 		recorderCheckBox = (CheckBox) findViewById(R.id.recorder_checkbox);
 		lightCheckBox = (CheckBox) findViewById(R.id.light_checkbox);
@@ -169,7 +233,6 @@ public class PreviewActivity extends Activity {
 	private void initDB() throws IllegalArgumentException,
 			IllegalAccessException {
 		double toatal = 0;
-		DBExecutor db;
 		db = DBExecutor.getInstance(this);
 		Sql sql = SqlFactory.find(Record.class);
 		List<Record> records = db.executeQuery(sql);
@@ -180,9 +243,9 @@ public class PreviewActivity extends Activity {
 		for (Record instance : records) {
 			showedRecords.add(instance);
 			toatal += instance.getMelige();
-			mAdapter.addExtraNode(1,
-					"行车距离:"+instance.getMelige() + "m | " + instance.getDate() + "\n<"
-							+ instance.getVideoName() + ">");
+			mAdapter.addExtraNode(1, "行车距离:" + instance.getMelige() + "m | "
+					+ instance.getDate() + "\n<" + instance.getVideoName()
+					+ ">");
 
 		}
 		mAdapter.addExtraNode(0, "total:" + toatal + "" + " m ");
@@ -193,6 +256,7 @@ public class PreviewActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		showedRecords = new Vector<Record>();
+		this.requestWindowFeature(Window.FEATURE_NO_TITLE);// remove title bar
 		setContentView(R.layout.activity_preview);
 		initView();
 		initListener();
@@ -305,7 +369,8 @@ public class PreviewActivity extends Activity {
 		// 判断GPS模块是否开启，如果没有则开启
 		if (!lm.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER)) {
 			// 转到手机设置界面，用户设置GPS
-			Intent intent1 = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+			Intent intent1 = new Intent(
+					Settings.ACTION_LOCATION_SOURCE_SETTINGS);
 			startActivityForResult(intent1, 0); // 设置完成后返回到原来的界面
 		}
 	}
@@ -314,7 +379,6 @@ public class PreviewActivity extends Activity {
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			new AlertDialog.Builder(this)
-
 					.setMessage("确定退出多媒体行车记录仪？")
 					.setNegativeButton("取消",
 							new DialogInterface.OnClickListener() {

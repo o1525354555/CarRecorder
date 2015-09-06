@@ -64,8 +64,8 @@ public class CameraUtils {
 
 	public static File startRecord(MediaRecorder mMediaRecorder,
 			File mRecVedioPath) throws IOException {
-		File mRecAudioFile = File
-				.createTempFile("Video"+TimeUtil.getTimeStr(), ".3gp", mRecVedioPath);
+		File mRecAudioFile = File.createTempFile(
+				"Video" + TimeUtil.getTimeStr(), ".3gp", mRecVedioPath);
 		mMediaRecorder.setOutputFile(mRecAudioFile.getAbsolutePath());
 		mMediaRecorder.prepare();
 		mMediaRecorder.start();// start record
@@ -85,23 +85,26 @@ public class CameraUtils {
 	 * 生成video文件名字 creates the name of video file
 	 */
 	public static void videoRename(File mRecAudioFile, int parentId) {
-//		String path = Environment.getExternalStorageDirectory()
-//				.getAbsolutePath()
-//				+ "/hfdatabase/video/"
-//				+ String.valueOf(parentId) + "/";
-//		String fileName = new SimpleDateFormat("yyyyMMddHHmmss")
-//				.format(new Date()) + ".3gp";
-//		File out = new File(path);
-//		if (!out.exists()) {
-//			out.mkdirs();
-//		}
-//		out = new File(path, fileName);
-//		if (mRecAudioFile.exists())
-//			mRecAudioFile.renameTo(out);
+		// String path = Environment.getExternalStorageDirectory()
+		// .getAbsolutePath()
+		// + "/hfdatabase/video/"
+		// + String.valueOf(parentId) + "/";
+		// String fileName = new SimpleDateFormat("yyyyMMddHHmmss")
+		// .format(new Date()) + ".3gp";
+		// File out = new File(path);
+		// if (!out.exists()) {
+		// out.mkdirs();
+		// }
+		// out = new File(path, fileName);
+		// if (mRecAudioFile.exists())
+		// mRecAudioFile.renameTo(out);
 	}
-	public static void delTempVideo(File mFileForSave) {
-		if(mFileForSave.exists()&&mFileForSave.isFile())
-			mFileForSave.delete();
-		Log.logAL(mFileForSave.getPath());
+
+	public static boolean delFile(File mFile) {
+		if (mFile.exists() && mFile.isFile()) {
+			mFile.delete();
+			return true;
+		}
+		return false;
 	}
 }

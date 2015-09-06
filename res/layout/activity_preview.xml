@@ -2,29 +2,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
-
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="20dp"
-        android:text="欢迎使用多媒体行车记录仪"
-        android:textSize="20dp" />
-
-    <TextView
-        android:id="@+id/textview1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="请选择所需功能"
-        android:textSize="15dp" />
-
+    android:orientation="vertical" 
+    android:background="@drawable/background"
+    >
+    
+	<LinearLayout 
+	    android:layout_height="0dp"
+	    android:layout_width="fill_parent"
+	    android:layout_weight="1"
+	    ></LinearLayout>	
+	   <LinearLayout 
+	       android:orientation="vertical"
+	    android:layout_height="0dp"
+	    android:layout_width="fill_parent"
+	    android:layout_weight="5"
+	    android:background="@drawable/touchup_bg"
+		android:layout_marginLeft="5dp"
+		android:layout_marginRight="5dp"
+	    >
     <CheckBox
         android:id="@+id/recorder_checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="行车影像记录" />
+        android:text="行车影像记录" 
+        />
 
     <CheckBox
         android:id="@+id/light_checkbox"
@@ -71,7 +72,7 @@
         android:layout_width="200dp"
         android:layout_height="40dp"
         android:layout_gravity="center"
-        android:text="确定" >
+        android:text="开始记录" >
     </Button>
 
     <ListView
@@ -81,5 +82,5 @@
         android:layout_weight="3"
         android:cacheColorHint="#ffffff" >
     </ListView>
-
+</LinearLayout>
 </LinearLayout>

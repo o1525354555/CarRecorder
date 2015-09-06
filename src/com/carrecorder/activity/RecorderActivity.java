@@ -5,8 +5,6 @@ import java.io.File;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
-
-
 import com.carrecorder.conf.ActivityConf;
 import com.carrecorder.conf.EnvConf;
 import com.carrecorder.db.table.Record;
@@ -20,7 +18,6 @@ import com.carrecorder.utils.time.TimeUtil;
 import com.db.DBExecutor;
 import com.db.sql.Sql;
 import com.db.sql.SqlFactory;
-
 import myjob.carrecorder.R;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -59,7 +56,6 @@ import android.view.WindowManager;
 import android.view.SurfaceHolder.Callback;
 import android.view.WindowManager.LayoutParams;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -97,7 +93,7 @@ public class RecorderActivity extends Activity implements GPSListener {
 	private int second = 0;
 	private TextToSpeech text2speech;
 
-	// sensor & keep screen light 
+	// sensor & keep screen light
 	private SensorManager mySensorManager;
 	private SensorEventListener sensorEventListener;
 	private BrightnessManager brightnessManager;
@@ -105,10 +101,8 @@ public class RecorderActivity extends Activity implements GPSListener {
 	private int range;// the flag for notice text
 	private int k = 0;
 	private int m = 0;
-	private int or;
 	private float f = 1.0f;
 	private boolean symbol1;
-	private boolean symbol2;
 
 	// Other
 	private GPS gps;// GPS
@@ -192,7 +186,7 @@ public class RecorderActivity extends Activity implements GPSListener {
 		brightnessManager.keepAwake();
 		compassRoatation = new CompassRoatation(compassView);
 		dbExecutor = DBExecutor.getInstance(this);
-		or = 1;
+		range = 4;
 		voiceToast();
 	}
 
@@ -208,79 +202,8 @@ public class RecorderActivity extends Activity implements GPSListener {
 		initOther();
 	}
 
-	// private Handler handler5 = new Handler();
-	// private Runnable task5 = new Runnable() {
-	// @Override
-	// public void run() {
-	// Intent intent1 = getIntent();
-	// final int rank2_1 = intent1.getIntExtra("range2_1", 0);
-	// final int rank2_2 = intent1.getIntExtra("range2_2", 0);
-	// handler5.postDelayed(task5, 8000);
-	// mSurfaceHolder.getSurfaceFrame();
-	// View view = getWindow().getDecorView();
-	// view.buildDrawingCache(true);
-	// Display display = RecorderActivity.this.getWindowManager()
-	// .getDefaultDisplay();
-	// view.layout(0, 0, display.getWidth(), display.getHeight());
-	// view.setDrawingCacheEnabled(true);
-	// Bitmap scrBmp = Bitmap.createBitmap(view.getDrawingCache());
-	// for (int i = 0; i < scrBmp.getWidth(); i = i + 30) {
-	// for (int j = 0; j < scrBmp.getHeight(); j = j + 30) {
-	// int col = scrBmp.getPixel(i, j);
-	// int alpha = col & 0xFF000000;
-	// int red = (col & 0x00FF0000) >> 16;
-	// int green = (col & 0x0000FF00) >> 8;
-	// int blue = (col & 0x000000FF);
-	// int grey = (int) ((float) red * 0.3 + (float) green * 0.59 + (float) blue
-	// * 0.11);
-	// m = m + 1;
-	// k = k + grey;
-	// System.out.println("grey=" + grey);
-	// }
-	// }
-	// scrBmp.recycle();
-	// System.out.println("m=" + m);
-	// System.out.println("k=" + k);
-	// if (50 * m <= k && 100 * m >= k) {
-	// if (rank2_1 == isChoice) {
-	// timerTextView.setText(EnvConf.NOTICE_WEAK_LIGHT_1);
-	// timerTextView.setVisibility(View.VISIBLE);
-	// timerTextView.setTextColor(Color.YELLOW);
-	// lightTextView.setVisibility(View.GONE);
-	// }
-	// range = isChoice;
-	// if (rank2_2 == isChoice) {
-	// voiceToast();
-	// }
-	// }
-	// if (50 * m >= k) {
-	// if (rank2_1 == isChoice) {
-	// lightTextView
-	// .setText(EnvConf.NOTICE_WEAK_LIGHT_1_MUTIL_LINE);
-	// lightTextView.setVisibility(View.VISIBLE);
-	// lightTextView.setTextColor(Color.YELLOW);
-	// timerTextView.setVisibility(View.GONE);
-	// sparkBackground();
-	// }
-	// range = 2;
-	// if (rank2_2 == isChoice) {
-	// voiceToast();
-	// }
-	// }
-	// if (100 * m <= k) {
-	// timerTextView.setVisibility(View.GONE);
-	// lightTextView.setVisibility(View.GONE);
-	// // Toast.makeText(getApplicationContext(),
-	// // EnvConf.NOTICE_GOOD_LIGHT, Toast.LENGTH_LONG).show();
-	// }
-	//
-	// k = 0;
-	// m = 0;
-	// }
-	// };
 	private Handler handler4 = new Handler();
 	private Runnable task4 = new Runnable() {
-
 		@Override
 		public void run() {
 			Intent intent1 = getIntent();
@@ -359,13 +282,12 @@ public class RecorderActivity extends Activity implements GPSListener {
 
 	};
 
-	private Handler handler3 = new Handler();
-	private Runnable task3 = new Runnable() {
-
+	private Handler handlerSpeed = new Handler();
+	private Runnable taskSpeed = new Runnable() {
 		@Override
 		public void run() {
+			handlerSpeed.postDelayed(taskSpeed, 10 * 1000);
 			Intent intent2 = getIntent();
-			final int rank3_1 = intent2.getIntExtra("range3_1", 0);
 			final int rank3_2 = intent2.getIntExtra("range3_2", 0);
 			if (gps != null) {
 				double speed = gps.getSpeed();
@@ -374,25 +296,14 @@ public class RecorderActivity extends Activity implements GPSListener {
 					if (rank3_2 == isChoice) {
 						voiceToast();
 					}
-					if (rank3_1 == isChoice) {
-						// gpsTextView.setText(EnvConf.NOTICE_SLOWDOWN_SEPPD);
-						// gpsTextView.setTextColor(Color.YELLOW);
-						// sparkBackground();
-					}
-				} else {
-					if (rank3_1 == isChoice) {
-						// Toast.makeText(getApplicationContext(),
-						// "车速正常" + speed + "m/s", Toast.LENGTH_LONG).show();
-					}
-					symbol2 = true;
 				}
 			}
 
 		}
 	};
 
-	private Handler handler2 = new Handler();
-	private Runnable task2 = new Runnable() {
+	private Handler handlerLight = new Handler();
+	private Runnable taskLight = new Runnable() {
 
 		@Override
 		public void run() {
@@ -408,46 +319,39 @@ public class RecorderActivity extends Activity implements GPSListener {
 					float[] values = event.values;
 					if (values[0] <= 50 && values[0] > 10) {
 						if (rank2_1 == isChoice) {
-							lightTextView.setText(EnvConf.NOTICE_WEAK_LIGHT_1);
+							lightTextView.setText(EnvConf.NOTICE_WEAK_LIGHT_1_MUTIL_LINE);
 							lightTextView.setVisibility(View.VISIBLE);
 							lightTextView.setTextColor(Color.RED);
-							lightTextView.setBackground(getResources()
-									.getDrawable(R.drawable.touchup_bg));
 						}
-						range = 1;
 						if (rank2_2 == isChoice) {
-
+							range = 1;
 							voiceToast();
 						}
 					} else if (values[0] <= 10) {
 						if (rank2_1 == isChoice) {
 							lightTextView
-									.setText(EnvConf.NOTICE_WEAK_LIGHT_1_MUTIL_LINE);
+									.setText(EnvConf.NOTICE_WEAK_LIGHT_2_MUTIL_LINE);
 							lightTextView.setVisibility(View.VISIBLE);
 							lightTextView.setTextColor(Color.YELLOW);
 							sparkBackground();
 						}
-						range = 2;
 						if (rank2_2 == isChoice) {
+							range = 2;
 							voiceToast();
 						}
-
 					} else if (values[0] > 50) {
 						timerTextView.setVisibility(View.GONE);
 						lightTextView.setVisibility(View.GONE);
 					}
 				}
-
 				@Override
 				public void onAccuracyChanged(Sensor sensor, int accuracy) {
-					// TODO Auto-generated method stub
 
 				}
 			};
 			mySensorManager.registerListener(sensorEventListener, s,
 					SensorManager.SENSOR_DELAY_NORMAL);
 			symbol1 = true;
-
 		}
 
 	};
@@ -524,9 +428,8 @@ public class RecorderActivity extends Activity implements GPSListener {
 	@Override
 	protected void onPause() {
 		super.onPause();
-		text2speech.shutdown();
 		onBackPressed();
-		handler4.removeCallbacks(task4);
+		// handler4.removeCallbacks(task4);
 		brightnessManager.releaseAwake();
 	}
 
@@ -536,100 +439,36 @@ public class RecorderActivity extends Activity implements GPSListener {
 		brightnessManager.keepAwake();
 	}
 
-	public void speak(String str, String path) {
+	public void speak(String str2speak, String path) {
 		if (text2speech.isSpeaking()) {
 			return;
 		}
-		final EditText noticeText = (EditText) findViewById(R.id.notice_text);
-		noticeText.setText(str);
-		noticeText.setVisibility(View.GONE);
-		str = noticeText.getText().toString();
-		text2speech.setPitch((float) 0.1);
 		text2speech.setLanguage(Locale.UK);
-		text2speech.addSpeech(str, EnvConf.AUDIO_PATH_SLOW_SPEED);
-		text2speech.speak(str, TextToSpeech.QUEUE_FLUSH, null);
-		Log.logAL(str);
+		text2speech.addSpeech(str2speak, path);
+		text2speech.speak(str2speak, TextToSpeech.QUEUE_FLUSH, null);
 	}
 
 	public void voiceToast() {
-		// switch (or) {
-		// case 1:
-		// speak(EnvConf.NOTICE_TUTORIAL_1,EnvConf.AUDIO_PATH_NOTICE_1);
-		// break;
-		// case 2:
-		// speak(EnvConf.NOTICE_TUTORIAL_2,EnvConf.AUDIO_PATH_NOTICE_2);
-		// break;
-		// default:
-		// break;
-		// }
-		// or=0;
-		// switch (range) {
-		// case EnvConf.WEAK_LIGHT_1:
-		// speak(EnvConf.NOTICE_WEAK_LIGHT_1,EnvConf.AUDIO_PATH_WEAK_LIGHT_1);
-		// break;
-		// case EnvConf.WEAK_LIGHT_2:
-		// speak(EnvConf.NOTICE_WEAK_LIGHT_2,EnvConf.AUDIO_PATH_WEAK_LIGHT_2);
-		// break;
-		// case EnvConf.SLOW_DOWN:
-		// speak(EnvConf.NOTICE_SLOWDOWN_SEPPD,EnvConf.AUDIO_PATH_SLOW_SPEED);
-		// break;
-		// default:
-		// break;
-		// }
-		final EditText noticeText = (EditText) findViewById(R.id.notice_text);
-		if (text2speech.isSpeaking()) {
-			return;
+		switch (range) {
+		case EnvConf.WEAK_LIGHT_1:
+			speak(EnvConf.NOTICE_WEAK_LIGHT_1, EnvConf.AUDIO_PATH_WEAK_LIGHT_1);
+			break;
+		case EnvConf.WEAK_LIGHT_2:
+			speak(EnvConf.NOTICE_WEAK_LIGHT_2, EnvConf.AUDIO_PATH_WEAK_LIGHT_2);
+			break;
+		case EnvConf.SLOW_DOWN:
+			Log.logAL("over speed speak");
+			speak(EnvConf.NOTICE_SLOWDOWN_SEPPD, EnvConf.AUDIO_PATH_SLOW_SPEED);
+			break;
+		case EnvConf.TUTORIAL_1:
+			speak(EnvConf.NOTICE_TUTORIAL_1, EnvConf.AUDIO_PATH_NOTICE_1);
+			break;
+		case EnvConf.TUTORIAL_2:
+			speak(EnvConf.NOTICE_TUTORIAL_2, EnvConf.AUDIO_PATH_NOTICE_2);
+			break;
+		default:
+			break;
 		}
-		if (range == isChoice) {
-			noticeText.setText(EnvConf.NOTICE_WEAK_LIGHT_1);
-			noticeText.setVisibility(View.GONE);
-			String str;
-			str = noticeText.getText().toString();
-			text2speech.setLanguage(Locale.UK);
-			text2speech.addSpeech(EnvConf.NOTICE_WEAK_LIGHT_1,
-					EnvConf.AUDIO_PATH_WEAK_LIGHT_1);
-			text2speech.speak(EnvConf.NOTICE_WEAK_LIGHT_1,
-					TextToSpeech.QUEUE_FLUSH, null);
-		} else if (range == 2) {
-			noticeText.setText(EnvConf.NOTICE_WEAK_LIGHT_2);
-			noticeText.setVisibility(View.GONE);
-			String str;
-			str = noticeText.getText().toString();
-			text2speech.setLanguage(Locale.UK);
-			text2speech.addSpeech(EnvConf.NOTICE_WEAK_LIGHT_2,
-					EnvConf.AUDIO_PATH_WEAK_LIGHT_2);
-			text2speech.speak(str, TextToSpeech.QUEUE_FLUSH, null);
-		} else if (range == 3) {
-			noticeText.setText(EnvConf.NOTICE_SLOWDOWN_SEPPD);
-			noticeText.setVisibility(View.GONE);
-			String str;
-			str = noticeText.getText().toString();
-			text2speech.setLanguage(Locale.UK);
-			text2speech.addSpeech(EnvConf.NOTICE_SLOWDOWN_SEPPD,
-					EnvConf.AUDIO_PATH_SLOW_SPEED);
-			text2speech.speak(str, TextToSpeech.QUEUE_FLUSH, null);
-		}
-		if (or == 2) {
-			noticeText.setText(EnvConf.NOTICE_TUTORIAL_2);
-			noticeText.setVisibility(View.GONE);
-			String str;
-			str = noticeText.getText().toString();
-			text2speech.setLanguage(Locale.UK);
-			text2speech.addSpeech(EnvConf.NOTICE_TUTORIAL_2,
-					EnvConf.AUDIO_PATH_NOTICE_2);
-			text2speech.speak(str, TextToSpeech.QUEUE_FLUSH, null);
-		}
-		if (or == 1) {
-			noticeText.setText(EnvConf.NOTICE_TUTORIAL_1);
-			noticeText.setVisibility(View.GONE);
-			String str;
-			str = noticeText.getText().toString();
-			text2speech.setLanguage(Locale.UK);
-			text2speech.addSpeech(EnvConf.NOTICE_TUTORIAL_1,
-					EnvConf.AUDIO_PATH_NOTICE_1);
-			text2speech.speak(str, TextToSpeech.QUEUE_FLUSH, null);
-		}
-		or = 0;
 	}
 
 	public void sparkBackground() {
@@ -637,15 +476,11 @@ public class RecorderActivity extends Activity implements GPSListener {
 		TimerTask taskcc = new TimerTask() {
 			public void run() {
 				runOnUiThread(new Runnable() {
-
 					public void run() {
 						if (clo == 0) {
 							clo = 1;
 							if (range == 2) {
 								lightTextView.setBackgroundColor(Color.RED);
-							}
-							if (range == 3) {
-								gpsTextView.setBackgroundColor(Color.RED);
 							}
 						} else {
 							clo = 0;
@@ -653,16 +488,12 @@ public class RecorderActivity extends Activity implements GPSListener {
 								lightTextView
 										.setBackgroundColor(Color.TRANSPARENT);
 							}
-							if (range == 3) {
-								gpsTextView
-										.setBackgroundColor(Color.TRANSPARENT);
-							}
 						}
 					}
 				});
 			}
 		};
-		timer.schedule(taskcc, 1, 100);
+		timer.schedule(taskcc, 1, 500);
 	}
 
 	private void setBrightness(float f) {
@@ -708,7 +539,7 @@ public class RecorderActivity extends Activity implements GPSListener {
 				}
 				if (overspeedNoticeCheckBoxStatus == isChoice
 						&& recorderCheckBoxStatus != 1) {
-					handler3.post(task3);
+					handlerSpeed.post(taskSpeed);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -754,18 +585,19 @@ public class RecorderActivity extends Activity implements GPSListener {
 				handler.postDelayed(task, 1000);// view the timer
 				if (lightNoticeCheckBoxStatus == isChoice
 						&& recorderCheckBoxStatus == isChoice) {
-					handler2.postDelayed(task2, 1000);
+					handlerLight.postDelayed(taskLight, 1000);
 				}
 				if (overspeedNoticeCheckBoxStatus == isChoice
 						&& recorderCheckBoxStatus == isChoice) {
-					handler3.postDelayed(task3, 1000);
+					handlerSpeed.postDelayed(taskSpeed, 1000);
+					Log.logAL("into postDelay");
 				}
 				mVideoStartBtn
 						.setBackgroundResource(R.drawable.arc_hf_btn_video_stop);
 				isRecording = !isRecording;
 				gps.addListeners(RecorderActivity.this);
 				brightnessManager.setBrightness(255);
-				or = 2;
+				range = 5;
 				voiceToast();
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -800,16 +632,16 @@ public class RecorderActivity extends Activity implements GPSListener {
 			if (lightNoticeCheckBoxStatus == isChoice
 					&& recorderCheckBoxStatus == isChoice) {
 				Log.logAL("remove task2");
-				handler2.removeCallbacks(task2);
+				handlerLight.removeCallbacks(taskLight);
 			}
 			if (overspeedNoticeCheckBoxStatus == isChoice
 					&& recorderCheckBoxStatus == isChoice) {
 				Log.logAL("remove task3");
-				handler3.removeCallbacks(task3);
+				handlerSpeed.removeCallbacks(taskSpeed);
 			}
 			Log.logAL("remove task4");
 			handler4.removeCallbacks(task4);
-			or = 1;
+			range = 4;
 			voiceToast();
 		}
 	}
@@ -834,7 +666,7 @@ public class RecorderActivity extends Activity implements GPSListener {
 	@Override
 	public void GPS_receiver(Location location) {
 		gps.updateDist(location);
-		orentationTextView.setText(location.getBearing()+"°");
+		orentationTextView.setText(location.getBearing() + "°");
 		gpsTextView
 				.setText(Common.formatDouble(location.getSpeed()) + "m/s"
 						+ "   " + "Dist:" + Common.formatDouble(gps.getDist())
@@ -890,7 +722,7 @@ public class RecorderActivity extends Activity implements GPSListener {
 							@Override
 							public void onClick(DialogInterface dialog,
 									int which) {
-								CameraUtils.delTempVideo(mFileForSave);
+								CameraUtils.delFile(mFileForSave);
 							}
 						})
 				.setNeutralButton("save",

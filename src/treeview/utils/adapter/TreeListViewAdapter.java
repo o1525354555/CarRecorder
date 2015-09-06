@@ -8,14 +8,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
-
 import treeview.utils.Node;
 import treeview.utils.TreeHelper;
 
-public abstract class TreeListViewAdapter<T> extends BaseAdapter
-{
+public abstract class TreeListViewAdapter<T> extends BaseAdapter {
 	protected Context mContext;
 	protected List<Node> mAllNodes;
 	protected List<Node> mVisibleNodes;
@@ -24,27 +23,35 @@ public abstract class TreeListViewAdapter<T> extends BaseAdapter
 	protected ListView mTree;
 
 	/**
-	 * 设置Node的点击回�?
+	 * 设置Node的点击回�?
 	 * 
 	 * @author zhy
 	 * 
 	 */
-	public interface OnTreeNodeClickListener
-	{
+	public interface OnTreeNodeClickListener {
 		void onClick(Node node, int position);
 	}
 
 	private OnTreeNodeClickListener mListener;
 
-	public void setOnTreeNodeClickListener(OnTreeNodeClickListener mListener)
-	{
+	public void setOnTreeNodeClickListener(OnTreeNodeClickListener mListener) {
 		this.mListener = mListener;
+	}
+
+	public interface OnTreeNodeLongClickListener {
+		void onLongClick(Node node, int position);
+	}
+
+	private OnTreeNodeLongClickListener mLongListener;
+
+	public void setOnTreeNodeLongClickListener(
+			OnTreeNodeLongClickListener mLongListener) {
+		this.mLongListener = mLongListener;
 	}
 
 	public TreeListViewAdapter(ListView tree, Context context, List<T> datas,
 			int defaultExpandLevel) throws IllegalArgumentException,
-			IllegalAccessException
-	{
+			IllegalAccessException {
 		mContext = context;
 		mInflater = LayoutInflater.from(mContext);
 		mAllNodes = TreeHelper.getSortedNodes(datas, defaultExpandLevel);
@@ -52,35 +59,41 @@ public abstract class TreeListViewAdapter<T> extends BaseAdapter
 
 		mTree = tree;
 
-		mTree.setOnItemClickListener(new OnItemClickListener()
-		{
+		mTree.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id)
-			{
+					int position, long id) {
 				expandOrCollapse(position);
 
-				if (mListener != null)
-				{
+				if (mListener != null) {
 					mListener.onClick(mVisibleNodes.get(position), position);
 				}
 
 			}
 
 		});
+		mTree.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				if (mLongListener != null) {
+					mLongListener.onLongClick(mVisibleNodes.get(position), position);
+				}
+				return false;
+			}
+		});
 
 	}
 
 	/**
-	 * 点击搜索或�?�展�?
+	 * 点击搜索或�?�展�?
 	 * 
 	 * @param position
 	 */
-	private void expandOrCollapse(int position)
-	{
+	private void expandOrCollapse(int position) {
 		Node n = mVisibleNodes.get(position);
-		if (n != null)
-		{
+		if (n != null) {
 			if (n.isLeaf())
 				return;
 			n.setExpand(!n.isExpand());
@@ -90,29 +103,25 @@ public abstract class TreeListViewAdapter<T> extends BaseAdapter
 	}
 
 	@Override
-	public int getCount()
-	{
+	public int getCount() {
 		return mVisibleNodes.size();
 	}
 
 	@Override
-	public Object getItem(int position)
-	{
+	public Object getItem(int position) {
 		return mVisibleNodes.get(position);
 	}
 
 	@Override
-	public long getItemId(int position)
-	{
+	public long getItemId(int position) {
 		return position;
 	}
 
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent)
-	{
+	public View getView(int position, View convertView, ViewGroup parent) {
 		Node node = mVisibleNodes.get(position);
 		convertView = getConvertView(node, position, convertView, parent);
-		// 设置内边�?
+		// 设置内边�?
 		convertView.setPadding(node.getLevel() * 30, 3, 3, 3);
 		return convertView;
 	}

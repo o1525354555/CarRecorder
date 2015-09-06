@@ -20,7 +20,6 @@ public class Common {
 	 */
 	public static String regularStr(String str,String regEx)
 	{
-//		"<([^<]*)>"
 		try{
 			Pattern pat = Pattern.compile(regEx);
 			Matcher mat = pat.matcher(str);
@@ -30,7 +29,7 @@ public class Common {
 		{
 			
 		}
-		return null;
+		return "";
 	}
 	@SuppressWarnings("unused")
 	public static boolean hasElement(Vector<Record> showedRecords,Record element)

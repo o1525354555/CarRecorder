@@ -18,7 +18,7 @@ public class CompassRoatation {
 				Animation.RELATIVE_TO_SELF, 0.5f,
 				Animation.RELATIVE_TO_SELF, 0.5f);
 		// 设置动画的持续时间
-		int offect = Math.abs((int)((currentDegree+degree)/360.0*1000));
+		int offect = Math.abs((int)((currentDegree+degree)/360.0*2000));
 		ra.setDuration(offect);
 		// 设置动画结束后的保留状态
 		ra.setFillAfter(true);
