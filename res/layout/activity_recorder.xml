@@ -8,20 +8,34 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" />
 
-    <ImageView
-        android:id="@+id/compass_outside"
+    <FrameLayout
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_alignParentBottom="true"
-        android:layout_margin="10dp"
-        android:background="@drawable/compass_out" />
-     <ImageView
-        android:id="@+id/compass_in"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="10dp"
-        android:background="@drawable/compass_in" />
+        android:layout_margin="10dp" >
+
+        <ImageView
+            android:id="@+id/compass_outside"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="@drawable/compass_out" />
+
+        <ImageView
+            android:id="@+id/compass_in"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="@drawable/compass_in" />
+
+        <TextView 
+            android:id="@+id/orentation_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0°"
+            android:layout_gravity="center"
+            android:layout_marginTop="5dp"
+  			android:textSize="15dp"
+            />
+    </FrameLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"

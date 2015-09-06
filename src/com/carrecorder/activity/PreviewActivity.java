@@ -45,11 +45,13 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 public class PreviewActivity extends Activity {
-	// *******************TreeView************************/
+	// tree view
 	public ListView mTree;
 	public SimpleTreeListViewAdapter<OrgBean> mAdapter;
 	public List<OrgBean> mDatas2;
 	public int idOfTreeList = 1;
+
+	// flag for check box
 	private int range1;
 	private int range2;
 	private int range3;
@@ -57,11 +59,15 @@ public class PreviewActivity extends Activity {
 	private int range2_2;
 	private int range3_1;
 	private int range3_2;
+	
+	//String for notice text
 	private String str1;
 	private String str2;
 	private String str3;
 	private String str4;
 	private String str5;
+
+	// view
 	private CheckBox recorderCheckBox;
 	private CheckBox lightCheckBox;
 	private CheckBox lightCheckBox_1;
@@ -70,6 +76,8 @@ public class PreviewActivity extends Activity {
 	private CheckBox overspeedCheckBox_1;
 	private CheckBox overspeedCheckBox_2;
 	private Button confirmBtn;
+
+	// other
 	private Vector<Record> showedRecords;
 
 	// *********************TreeView*******************//
@@ -78,9 +86,10 @@ public class PreviewActivity extends Activity {
 			@Override
 			public void onClick(Node node, int position) {
 				if (node.isLeaf() && node.getName().length() > 20) {
-//					String str = node.getName();
-//					str = str.substring(str.length() - 19);
-					String str=Common.regularStr(node.getName(), "<([^<]*)>").replaceAll("<","").replaceAll(">", "");
+					// String str = node.getName();
+					// str = str.substring(str.length() - 19);
+					String str = Common.regularStr(node.getName(), "<([^<]*)>")
+							.replaceAll("<", "").replaceAll(">", "");
 					String path = Environment.getExternalStorageDirectory()
 							.getAbsolutePath() + "/CarRecorder/video/" + str;
 					File testFile = new File(path);
@@ -172,9 +181,9 @@ public class PreviewActivity extends Activity {
 			showedRecords.add(instance);
 			toatal += instance.getMelige();
 			mAdapter.addExtraNode(1,
-					instance.getMelige() + "m" + instance.getDate() + "|<"
-							+ instance.getVideoName()+">");
-			
+					"行车距离:"+instance.getMelige() + "m | " + instance.getDate() + "\n<"
+							+ instance.getVideoName() + ">");
+
 		}
 		mAdapter.addExtraNode(0, "total:" + toatal + "" + " m ");
 		sql = SqlFactory.find(Record.class, "count(*) as num");
@@ -296,7 +305,7 @@ public class PreviewActivity extends Activity {
 		// 判断GPS模块是否开启，如果没有则开启
 		if (!lm.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER)) {
 			// 转到手机设置界面，用户设置GPS
-			Intent intent1 = new Intent(Settings.ACTION_SECURITY_SETTINGS);
+			Intent intent1 = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
 			startActivityForResult(intent1, 0); // 设置完成后返回到原来的界面
 		}
 	}
@@ -456,6 +465,7 @@ public class PreviewActivity extends Activity {
 			e.printStackTrace();
 		}
 	}
+
 	@Override
 	protected void onRestart() {
 		// TODO Auto-generated method stub

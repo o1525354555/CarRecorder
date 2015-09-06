@@ -6,10 +6,6 @@ import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import treeview.adapter.SimpleTreeListViewAdapter;
-import treeview.bean.OrgBean;
-import treeview.utils.Node;
-import treeview.utils.adapter.TreeListViewAdapter.OnTreeNodeClickListener;
 
 import com.carrecorder.conf.ActivityConf;
 import com.carrecorder.conf.EnvConf;
@@ -69,47 +65,55 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class RecorderActivity extends Activity implements GPSListener {
+	// final par
+	private final int isChoice = 1;
+
+	// view
 	private Button mVideoStartBtn;
 	private SurfaceView mSurfaceview;
-	private MediaRecorder mMediaRecorder;
-	private SurfaceHolder mSurfaceHolder;
-	private File mRecVedioPath;
-	private File mFileForSave;
 	private TextView timer;
-	private int hour = 0;
-	private int minute = 0;
-	private int second = 0;
-	private boolean bool;
-	protected Camera cameraDevice;
-	protected boolean isPreview;
-	private boolean isRecording = true; // true-->no record,click to start；
-	// false-->recording,click to pause;
-	private TextToSpeech text2speech;
 	private TextView timerTextView;
 	private TextView lightTextView;
 	private TextView gpsTextView;
-	private SensorManager mySensorManager;
+	private TextView orentationTextView;
 	private ImageView compassView;
+
+	// intent
+	private int recorderCheckBoxStatus;
+	private int lightNoticeCheckBoxStatus;
+	private int overspeedNoticeCheckBoxStatus;
+
+	// camera
+	private MediaRecorder mMediaRecorder;
+	private SurfaceHolder mSurfaceHolder;
+	protected Camera cameraDevice;
+	private File mRecVedioPath;
+	private File mFileForSave;
+	private boolean bool;
+	private boolean isPreview;
+	private boolean isRecording = true;
+	private int hour = 0;
+	private int minute = 0;
+	private int second = 0;
+	private TextToSpeech text2speech;
+
+	// sensor & keep screen light 
+	private SensorManager mySensorManager;
+	private SensorEventListener sensorEventListener;
+	private BrightnessManager brightnessManager;
 	private int clo = 0;
 	private int range;// the flag for notice text
 	private int k = 0;
 	private int m = 0;
-	private SensorEventListener sensorEventListener;
-	float speed;
-	double lat;
-	double lng;
-	boolean symbol1;
-	boolean symbol2;
 	private int or;
 	private float f = 1.0f;
-	private int recorderCheckBoxStatus;
-	private int lightNoticeCheckBoxStatus;
-	private int overspeedNoticeCheckBoxStatus;
-	private final int isChoice = 1;
-	private GPS gps;
-	private BrightnessManager brightnessManager;
-	private DBExecutor dbExecutor;
-	private CompassRoatation compassRoatation;
+	private boolean symbol1;
+	private boolean symbol2;
+
+	// Other
+	private GPS gps;// GPS
+	private DBExecutor dbExecutor;// DB
+	private CompassRoatation compassRoatation;// Animation
 
 	private void initView() {
 		// to full screen show
@@ -125,6 +129,7 @@ public class RecorderActivity extends Activity implements GPSListener {
 		lightTextView = (TextView) findViewById(R.id.light_textview);
 		gpsTextView = (TextView) findViewById(R.id.gps_textview);
 		compassView = (ImageView) findViewById(R.id.compass_in);
+		orentationTextView = (TextView) findViewById(R.id.orentation_textview);
 	}
 
 	private void initSensor() {
@@ -162,8 +167,10 @@ public class RecorderActivity extends Activity implements GPSListener {
 				.getAbsolutePath() + "/CarRecorder/video/");
 		Toast.makeText(
 				this,
-				"save path"+Environment.getExternalStorageDirectory().getAbsolutePath()
-						+ "/CarRecorder/video/", Toast.LENGTH_LONG).show();
+				"save path"
+						+ Environment.getExternalStorageDirectory()
+								.getAbsolutePath() + "/CarRecorder/video/",
+				Toast.LENGTH_LONG).show();
 		if (!mRecVedioPath.exists()) {
 			mRecVedioPath.mkdirs();
 		}
@@ -201,75 +208,76 @@ public class RecorderActivity extends Activity implements GPSListener {
 		initOther();
 	}
 
-//	private Handler handler5 = new Handler();
-//	private Runnable task5 = new Runnable() {
-//		@Override
-//		public void run() {
-//			Intent intent1 = getIntent();
-//			final int rank2_1 = intent1.getIntExtra("range2_1", 0);
-//			final int rank2_2 = intent1.getIntExtra("range2_2", 0);
-//			handler5.postDelayed(task5, 8000);
-//			mSurfaceHolder.getSurfaceFrame();
-//			View view = getWindow().getDecorView();
-//			view.buildDrawingCache(true);
-//			Display display = RecorderActivity.this.getWindowManager()
-//					.getDefaultDisplay();
-//			view.layout(0, 0, display.getWidth(), display.getHeight());
-//			view.setDrawingCacheEnabled(true);
-//			Bitmap scrBmp = Bitmap.createBitmap(view.getDrawingCache());
-//			for (int i = 0; i < scrBmp.getWidth(); i = i + 30) {
-//				for (int j = 0; j < scrBmp.getHeight(); j = j + 30) {
-//					int col = scrBmp.getPixel(i, j);
-//					int alpha = col & 0xFF000000;
-//					int red = (col & 0x00FF0000) >> 16;
-//					int green = (col & 0x0000FF00) >> 8;
-//					int blue = (col & 0x000000FF);
-//					int grey = (int) ((float) red * 0.3 + (float) green * 0.59 + (float) blue * 0.11);
-//					m = m + 1;
-//					k = k + grey;
-//					System.out.println("grey=" + grey);
-//				}
-//			}
-//			scrBmp.recycle();
-//			System.out.println("m=" + m);
-//			System.out.println("k=" + k);
-//			if (50 * m <= k && 100 * m >= k) {
-//				if (rank2_1 == isChoice) {
-//					timerTextView.setText(EnvConf.NOTICE_WEAK_LIGHT_1);
-//					timerTextView.setVisibility(View.VISIBLE);
-//					timerTextView.setTextColor(Color.YELLOW);
-//					lightTextView.setVisibility(View.GONE);
-//				}
-//				range = isChoice;
-//				if (rank2_2 == isChoice) {
-//					voiceToast();
-//				}
-//			}
-//			if (50 * m >= k) {
-//				if (rank2_1 == isChoice) {
-//					lightTextView
-//							.setText(EnvConf.NOTICE_WEAK_LIGHT_1_MUTIL_LINE);
-//					lightTextView.setVisibility(View.VISIBLE);
-//					lightTextView.setTextColor(Color.YELLOW);
-//					timerTextView.setVisibility(View.GONE);
-//					sparkBackground();
-//				}
-//				range = 2;
-//				if (rank2_2 == isChoice) {
-//					voiceToast();
-//				}
-//			}
-//			if (100 * m <= k) {
-//				timerTextView.setVisibility(View.GONE);
-//				lightTextView.setVisibility(View.GONE);
-//				// Toast.makeText(getApplicationContext(),
-//				// EnvConf.NOTICE_GOOD_LIGHT, Toast.LENGTH_LONG).show();
-//			}
-//
-//			k = 0;
-//			m = 0;
-//		}
-//	};
+	// private Handler handler5 = new Handler();
+	// private Runnable task5 = new Runnable() {
+	// @Override
+	// public void run() {
+	// Intent intent1 = getIntent();
+	// final int rank2_1 = intent1.getIntExtra("range2_1", 0);
+	// final int rank2_2 = intent1.getIntExtra("range2_2", 0);
+	// handler5.postDelayed(task5, 8000);
+	// mSurfaceHolder.getSurfaceFrame();
+	// View view = getWindow().getDecorView();
+	// view.buildDrawingCache(true);
+	// Display display = RecorderActivity.this.getWindowManager()
+	// .getDefaultDisplay();
+	// view.layout(0, 0, display.getWidth(), display.getHeight());
+	// view.setDrawingCacheEnabled(true);
+	// Bitmap scrBmp = Bitmap.createBitmap(view.getDrawingCache());
+	// for (int i = 0; i < scrBmp.getWidth(); i = i + 30) {
+	// for (int j = 0; j < scrBmp.getHeight(); j = j + 30) {
+	// int col = scrBmp.getPixel(i, j);
+	// int alpha = col & 0xFF000000;
+	// int red = (col & 0x00FF0000) >> 16;
+	// int green = (col & 0x0000FF00) >> 8;
+	// int blue = (col & 0x000000FF);
+	// int grey = (int) ((float) red * 0.3 + (float) green * 0.59 + (float) blue
+	// * 0.11);
+	// m = m + 1;
+	// k = k + grey;
+	// System.out.println("grey=" + grey);
+	// }
+	// }
+	// scrBmp.recycle();
+	// System.out.println("m=" + m);
+	// System.out.println("k=" + k);
+	// if (50 * m <= k && 100 * m >= k) {
+	// if (rank2_1 == isChoice) {
+	// timerTextView.setText(EnvConf.NOTICE_WEAK_LIGHT_1);
+	// timerTextView.setVisibility(View.VISIBLE);
+	// timerTextView.setTextColor(Color.YELLOW);
+	// lightTextView.setVisibility(View.GONE);
+	// }
+	// range = isChoice;
+	// if (rank2_2 == isChoice) {
+	// voiceToast();
+	// }
+	// }
+	// if (50 * m >= k) {
+	// if (rank2_1 == isChoice) {
+	// lightTextView
+	// .setText(EnvConf.NOTICE_WEAK_LIGHT_1_MUTIL_LINE);
+	// lightTextView.setVisibility(View.VISIBLE);
+	// lightTextView.setTextColor(Color.YELLOW);
+	// timerTextView.setVisibility(View.GONE);
+	// sparkBackground();
+	// }
+	// range = 2;
+	// if (rank2_2 == isChoice) {
+	// voiceToast();
+	// }
+	// }
+	// if (100 * m <= k) {
+	// timerTextView.setVisibility(View.GONE);
+	// lightTextView.setVisibility(View.GONE);
+	// // Toast.makeText(getApplicationContext(),
+	// // EnvConf.NOTICE_GOOD_LIGHT, Toast.LENGTH_LONG).show();
+	// }
+	//
+	// k = 0;
+	// m = 0;
+	// }
+	// };
 	private Handler handler4 = new Handler();
 	private Runnable task4 = new Runnable() {
 
@@ -504,7 +512,7 @@ public class RecorderActivity extends Activity implements GPSListener {
 								if (mMediaRecorder != null) {
 									RecorderActivity.this.click();
 								}
-								if (symbol1 = true) {
+								if (symbol1) {
 									mySensorManager
 											.unregisterListener(sensorEventListener);
 								}
@@ -527,10 +535,9 @@ public class RecorderActivity extends Activity implements GPSListener {
 		super.onResume();
 		brightnessManager.keepAwake();
 	}
-	public void speak(String str,String path)
-	{
-		if(text2speech.isSpeaking())
-		{
+
+	public void speak(String str, String path) {
+		if (text2speech.isSpeaking()) {
 			return;
 		}
 		final EditText noticeText = (EditText) findViewById(R.id.notice_text);
@@ -539,36 +546,36 @@ public class RecorderActivity extends Activity implements GPSListener {
 		str = noticeText.getText().toString();
 		text2speech.setPitch((float) 0.1);
 		text2speech.setLanguage(Locale.UK);
-		text2speech.addSpeech(str,
-				EnvConf.AUDIO_PATH_SLOW_SPEED);
-		text2speech.speak(str, TextToSpeech.QUEUE_FLUSH , null);
+		text2speech.addSpeech(str, EnvConf.AUDIO_PATH_SLOW_SPEED);
+		text2speech.speak(str, TextToSpeech.QUEUE_FLUSH, null);
 		Log.logAL(str);
 	}
+
 	public void voiceToast() {
-//		switch (or) {
-//		case 1:
-//			speak(EnvConf.NOTICE_TUTORIAL_1,EnvConf.AUDIO_PATH_NOTICE_1);
-//			break;
-//		case 2:
-//			speak(EnvConf.NOTICE_TUTORIAL_2,EnvConf.AUDIO_PATH_NOTICE_2);
-//			break;
-//		default:
-//			break;
-//		}
-//		or=0;
-//		switch (range) {
-//		case EnvConf.WEAK_LIGHT_1:
-//			speak(EnvConf.NOTICE_WEAK_LIGHT_1,EnvConf.AUDIO_PATH_WEAK_LIGHT_1);
-//			break;
-//		case EnvConf.WEAK_LIGHT_2:
-//			speak(EnvConf.NOTICE_WEAK_LIGHT_2,EnvConf.AUDIO_PATH_WEAK_LIGHT_2);
-//			break;
-//		case EnvConf.SLOW_DOWN:
-//			speak(EnvConf.NOTICE_SLOWDOWN_SEPPD,EnvConf.AUDIO_PATH_SLOW_SPEED);
-//			break;
-//		default:
-//			break;
-//		}
+		// switch (or) {
+		// case 1:
+		// speak(EnvConf.NOTICE_TUTORIAL_1,EnvConf.AUDIO_PATH_NOTICE_1);
+		// break;
+		// case 2:
+		// speak(EnvConf.NOTICE_TUTORIAL_2,EnvConf.AUDIO_PATH_NOTICE_2);
+		// break;
+		// default:
+		// break;
+		// }
+		// or=0;
+		// switch (range) {
+		// case EnvConf.WEAK_LIGHT_1:
+		// speak(EnvConf.NOTICE_WEAK_LIGHT_1,EnvConf.AUDIO_PATH_WEAK_LIGHT_1);
+		// break;
+		// case EnvConf.WEAK_LIGHT_2:
+		// speak(EnvConf.NOTICE_WEAK_LIGHT_2,EnvConf.AUDIO_PATH_WEAK_LIGHT_2);
+		// break;
+		// case EnvConf.SLOW_DOWN:
+		// speak(EnvConf.NOTICE_SLOWDOWN_SEPPD,EnvConf.AUDIO_PATH_SLOW_SPEED);
+		// break;
+		// default:
+		// break;
+		// }
 		final EditText noticeText = (EditText) findViewById(R.id.notice_text);
 		if (text2speech.isSpeaking()) {
 			return;
@@ -581,7 +588,8 @@ public class RecorderActivity extends Activity implements GPSListener {
 			text2speech.setLanguage(Locale.UK);
 			text2speech.addSpeech(EnvConf.NOTICE_WEAK_LIGHT_1,
 					EnvConf.AUDIO_PATH_WEAK_LIGHT_1);
-			text2speech.speak(EnvConf.NOTICE_WEAK_LIGHT_1, TextToSpeech.QUEUE_FLUSH , null);
+			text2speech.speak(EnvConf.NOTICE_WEAK_LIGHT_1,
+					TextToSpeech.QUEUE_FLUSH, null);
 		} else if (range == 2) {
 			noticeText.setText(EnvConf.NOTICE_WEAK_LIGHT_2);
 			noticeText.setVisibility(View.GONE);
@@ -727,7 +735,7 @@ public class RecorderActivity extends Activity implements GPSListener {
 			/*
 			 * Click to record
 			 */
-			if (isPreview&&cameraDevice!=null) {
+			if (isPreview && cameraDevice != null) {
 				cameraDevice = CameraUtils.stopCamera(cameraDevice);
 			}
 			Log.logAL("record start");
@@ -740,7 +748,8 @@ public class RecorderActivity extends Activity implements GPSListener {
 			mMediaRecorder = CameraUtils.initMediaRecorder(mMediaRecorder,
 					mSurfaceHolder);
 			try {
-				mFileForSave = CameraUtils.startRecord(mMediaRecorder, mRecVedioPath);
+				mFileForSave = CameraUtils.startRecord(mMediaRecorder,
+						mRecVedioPath);
 				timer.setVisibility(View.VISIBLE);
 				handler.postDelayed(task, 1000);// view the timer
 				if (lightNoticeCheckBoxStatus == isChoice
@@ -771,7 +780,7 @@ public class RecorderActivity extends Activity implements GPSListener {
 				setBrightness(f);
 				timer.setText(format(hour) + ":" + format(minute) + ":"
 						+ format(second));
-//				text2speech.shutdown();
+				// text2speech.shutdown();
 				mMediaRecorder = CameraUtils.stopRecord(mMediaRecorder);
 				RecorderActivity.this.saveDialog();
 			} catch (Exception e) {
@@ -800,7 +809,7 @@ public class RecorderActivity extends Activity implements GPSListener {
 			}
 			Log.logAL("remove task4");
 			handler4.removeCallbacks(task4);
-			or=1;
+			or = 1;
 			voiceToast();
 		}
 	}
@@ -825,12 +834,13 @@ public class RecorderActivity extends Activity implements GPSListener {
 	@Override
 	public void GPS_receiver(Location location) {
 		gps.updateDist(location);
-		gpsTextView.setText(Common.formatDouble(location.getSpeed()) + "m/s"
-				+ "   " + "Dist:" + Common.formatDouble(gps.getDist()) 
-				+ "\n" + "经度"
-				+ location.getLatitude() + "\n" + "纬度"
-				+ location.getLongitude()+ "\n"
-				+ "方向" + location.getBearing());
+		orentationTextView.setText(location.getBearing()+"°");
+		gpsTextView
+				.setText(Common.formatDouble(location.getSpeed()) + "m/s"
+						+ "   " + "Dist:" + Common.formatDouble(gps.getDist())
+						+ "\n" + "经度" + location.getLatitude() + "\n" + "纬度"
+						+ location.getLongitude() + "\n" + "方向"
+						+ location.getBearing());
 		gpsTextView.setTextColor(Color.YELLOW);
 		compassRoatation.rotate(location.getBearing());
 	}
@@ -875,23 +885,27 @@ public class RecorderActivity extends Activity implements GPSListener {
 	private void saveDialog() {
 		new AlertDialog.Builder(this)
 				.setMessage("do you want save this car record video?")
-				.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						CameraUtils.delTempVideo(mFileForSave);
-					}
-				})
+				.setNegativeButton("cancel",
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								CameraUtils.delTempVideo(mFileForSave);
+							}
+						})
 				.setNeutralButton("save",
 						new DialogInterface.OnClickListener() {
 
 							@Override
 							public void onClick(DialogInterface dialog,
 									int which) {
-								
+
 								try {
 									Sql sql;
-									sql = SqlFactory.insert(new Record((int) gps.getDist(),
-											TimeUtil.getTimeStr(),mFileForSave.getName()));
+									sql = SqlFactory.insert(new Record(
+											(int) gps.getDist(), TimeUtil
+													.getTimeStr(), mFileForSave
+													.getName()));
 									dbExecutor.execute(sql);
 								} catch (IllegalArgumentException e) {
 									// TODO Auto-generated catch block
@@ -900,9 +914,8 @@ public class RecorderActivity extends Activity implements GPSListener {
 									// TODO Auto-generated catch block
 									e.printStackTrace();
 								}
-								
+
 							}
-						})
-				.show();
+						}).show();
 	}
 }
