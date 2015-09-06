@@ -26,14 +26,13 @@
             android:layout_height="fill_parent"
             android:background="@drawable/compass_in" />
 
-        <TextView 
+        <TextView
             android:id="@+id/orentation_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0°"
             android:layout_gravity="center"
-  			android:textSize="15dp"
-            />
+            android:text="0°"
+            android:textSize="15dp" />
     </FrameLayout>
 
     <LinearLayout
@@ -91,20 +90,18 @@
         android:layout_height="fill_parent"
         android:gravity="center"
         android:visibility="gone" />
-
-    <LinearLayout
-        android:id="@+id/arc_hf_video_btn"
-        android:layout_width="wrap_content"
+    <LinearLayout 
         android:layout_height="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_alignParentRight="true"
-        android:gravity="center"
-        android:orientation="vertical" >
-
-        <Button
-            android:id="@+id/arc_hf_video_start"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/arc_hf_btn_video_start" />
+        >
+    <Button
+        android:id="@+id/arc_hf_video_start"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:background="@drawable/arc_hf_btn_video_start" 
+        android:layout_gravity="center_vertical"
+        />
     </LinearLayout>
 
 </RelativeLayout>
