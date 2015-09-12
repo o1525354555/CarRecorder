@@ -28,19 +28,22 @@ public final class R {
         public static final int compass_out=0x7f020004;
         public static final int ic_launcher=0x7f020005;
         public static final int icon=0x7f020006;
-        public static final int touchup_bg=0x7f020007;
-        public static final int tree_ec=0x7f020008;
-        public static final int tree_ex=0x7f020009;
+        public static final int speed_bkg=0x7f020007;
+        public static final int speed_point=0x7f020008;
+        public static final int touchup_bg=0x7f020009;
+        public static final int tree_ec=0x7f02000a;
+        public static final int tree_ex=0x7f02000b;
     }
     public static final class id {
-        public static final int action_settings=0x7f080015;
+        public static final int action_settings=0x7f080018;
         public static final int arc_hf_video_start=0x7f080012;
         public static final int compass_in=0x7f08000b;
         public static final int compass_outside=0x7f08000a;
         public static final int confirm_button=0x7f080007;
+        public static final int dist_text_view=0x7f080014;
         public static final int gps_textview=0x7f08000e;
-        public static final int id_item_icon=0x7f080013;
-        public static final int id_item_text=0x7f080014;
+        public static final int id_item_icon=0x7f080016;
+        public static final int id_item_text=0x7f080017;
         public static final int id_listview=0x7f080008;
         public static final int light_checkbox=0x7f080001;
         public static final int light_checkbox_1=0x7f080002;
@@ -52,6 +55,8 @@ public final class R {
         public static final int overspeed_checkbox_1=0x7f080005;
         public static final int overspeed_checkbox_2=0x7f080006;
         public static final int recorder_checkbox=0x7f080000;
+        public static final int speed_pointer=0x7f080015;
+        public static final int speed_text_view=0x7f080013;
         public static final int surface_camera=0x7f080009;
         public static final int timer=0x7f08000d;
         public static final int timer_textview=0x7f08000f;

@@ -1,6 +1,7 @@
 package com.carrecorder.utils;
 
 import java.text.DecimalFormat;
+import java.util.Random;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -31,7 +32,6 @@ public class Common {
 		}
 		return "";
 	}
-	@SuppressWarnings("unused")
 	public static boolean hasElement(Vector<Record> showedRecords,Record element)
 	{
 		for (int i=0;i<showedRecords.size();i++)
@@ -40,5 +40,41 @@ public class Common {
 				return true;
 		}
 		return false;
+	}
+	/*
+	 * format time
+	 */
+	public static String format(int i) {
+		String s = i + "";
+		if (s.length() == 1) {
+			s = "0" + s;
+		}
+		return s;
+	}
+	public static String formatTimeForShow(int hour,int minute,int second) {
+		return Common.format(hour) + ":" + Common.format(minute) + ":"
+				+ Common.format(second);
+	}
+	/**
+	 * if dist<1000 then return xxx m
+	 * else  			 return xxx km
+	 * @return
+	 */
+	public static String mDist2kmDistStr(int dist)
+	{
+		String distStr;
+		if(dist <1000)
+		{
+			distStr = dist + " m";
+		}else
+		{
+			distStr = formatDouble(dist/1000.0) +" km";
+		}
+		return distStr;
+	}
+	public static int getRandom(int min, int max) {
+		Random random = new Random();
+		int s = random.nextInt(max) % (max - min + 1) + min;
+		return s;
 	}
 }

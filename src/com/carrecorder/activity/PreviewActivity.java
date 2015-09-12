@@ -10,14 +10,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-import treeview.adapter.SimpleTreeListViewAdapter;
-import treeview.bean.OrgBean;
-import treeview.utils.Node;
-import treeview.utils.adapter.TreeListViewAdapter.OnTreeNodeClickListener;
-import treeview.utils.adapter.TreeListViewAdapter.OnTreeNodeLongClickListener;
 import myjob.carrecorder.R;
 
 import com.carrecorder.conf.ActivityConf;
+import com.carrecorder.customer.view.treeview.adapter.SimpleTreeListViewAdapter;
+import com.carrecorder.customer.view.treeview.bean.OrgBean;
+import com.carrecorder.customer.view.treeview.utils.Node;
+import com.carrecorder.customer.view.treeview.utils.adapter.TreeListViewAdapter.OnTreeNodeClickListener;
+import com.carrecorder.customer.view.treeview.utils.adapter.TreeListViewAdapter.OnTreeNodeLongClickListener;
 import com.carrecorder.db.table.Record;
 import com.carrecorder.utils.Common;
 import com.carrecorder.utils.camera.CameraUtils;
@@ -232,7 +232,8 @@ public class PreviewActivity extends Activity {
 
 	private void initDB() throws IllegalArgumentException,
 			IllegalAccessException {
-		double toatal = 0;
+		int total = 0;
+		String totalStr="总里程：";
 		db = DBExecutor.getInstance(this);
 		Sql sql = SqlFactory.find(Record.class);
 		List<Record> records = db.executeQuery(sql);
@@ -242,14 +243,13 @@ public class PreviewActivity extends Activity {
 		// db.execute(sql);
 		for (Record instance : records) {
 			showedRecords.add(instance);
-			toatal += instance.getMelige();
-			mAdapter.addExtraNode(1, "行车距离:" + instance.getMelige() + "m | "
+			total += instance.getMelige();
+			mAdapter.addExtraNode(1, "行车距离:" + Common.mDist2kmDistStr(instance.getMelige()) + " | "
 					+ instance.getDate() + "\n<" + instance.getVideoName()
 					+ ">");
-
 		}
-		mAdapter.addExtraNode(0, "total:" + toatal + "" + " m ");
-		sql = SqlFactory.find(Record.class, "count(*) as num");
+		totalStr = totalStr+Common.mDist2kmDistStr(total);
+		mAdapter.addExtraNode(0, totalStr);
 	}
 
 	@Override

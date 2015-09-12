@@ -90,18 +90,53 @@
         android:layout_height="fill_parent"
         android:gravity="center"
         android:visibility="gone" />
-    <LinearLayout 
-        android:layout_height="fill_parent"
+
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_alignParentRight="true"
-        >
-    <Button
-        android:id="@+id/arc_hf_video_start"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:background="@drawable/arc_hf_btn_video_start" 
-        android:layout_gravity="center_vertical"
-        />
+        android:layout_height="fill_parent"
+        android:layout_alignParentRight="true" >
+
+        <Button
+            android:id="@+id/arc_hf_video_start"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/arc_hf_btn_video_start" />
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="200dp"
+        android:layout_height="113dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:background="@drawable/speed_bkg"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/speed_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="42dp"
+            android:layout_gravity="center_horizontal"
+            android:text="0km/h"
+            android:textColor="#ff6600"
+            android:textSize="12dp" />
+
+        <TextView
+            android:id="@+id/dist_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="0km"
+            android:textColor="#ff6600"
+            android:textSize="12dp" />
+    </LinearLayout>
+	<ImageView 
+	    android:id="@+id/speed_pointer"
+	    android:background="@drawable/speed_point"
+	    android:layout_alignParentBottom="true"
+	    android:layout_centerInParent="true"
+	    android:layout_height="32dp"
+	    android:layout_width="158dp"
+	    />
 </RelativeLayout>
