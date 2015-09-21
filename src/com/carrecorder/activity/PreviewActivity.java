@@ -37,11 +37,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -77,7 +80,8 @@ public class PreviewActivity extends Activity {
 	private CheckBox overspeedCheckBox_1;
 	private CheckBox overspeedCheckBox_2;
 	private Button confirmBtn;
-
+	private ImageView confirmView;
+	
 	// other
 	private Vector<Record> showedRecords;
 	private String videoPath;
@@ -125,10 +129,8 @@ public class PreviewActivity extends Activity {
 								try {
 									initDB();
 								} catch (IllegalArgumentException e) {
-									// TODO Auto-generated catch block
 									e.printStackTrace();
 								} catch (IllegalAccessException e) {
-									// TODO Auto-generated catch block
 									e.printStackTrace();
 								}
 							}
@@ -182,7 +184,8 @@ public class PreviewActivity extends Activity {
 		overspeedCheckBox = (CheckBox) findViewById(R.id.overspeed_checkbox);
 		overspeedCheckBox_1 = (CheckBox) findViewById(R.id.overspeed_checkbox_1);
 		overspeedCheckBox_2 = (CheckBox) findViewById(R.id.overspeed_checkbox_2);
-		confirmBtn = (Button) findViewById(R.id.confirm_button);
+//		confirmBtn = (Button) findViewById(R.id.confirm_button);
+		confirmView =(ImageView) findViewById(R.id.confirm_view);
 		lightCheckBox_1.setVisibility(View.GONE);
 		lightCheckBox_2.setVisibility(View.GONE);
 		overspeedCheckBox_1.setVisibility(View.GONE);
@@ -227,7 +230,8 @@ public class PreviewActivity extends Activity {
 		lightCheckBox.setOnCheckedChangeListener(new LightCheckboxListener());
 		overspeedCheckBox
 				.setOnCheckedChangeListener(new OverspeedCheckboxListener());
-		confirmBtn.setOnClickListener(new ConfirmBtnListener());
+		confirmView.setOnClickListener(new ConfirmBtnListener());
+		confirmView.setOnTouchListener(new ConfirmBtnTouchListener());
 	}
 
 	private void initDB() throws IllegalArgumentException,
@@ -267,10 +271,8 @@ public class PreviewActivity extends Activity {
 		try {
 			initDB();
 		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -366,7 +368,6 @@ public class PreviewActivity extends Activity {
 	private void initGPS() {
 		LocationManager lm = (LocationManager) this
 				.getSystemService(Context.LOCATION_SERVICE);
-		// 判断GPS模块是否开启，如果没有则开启
 		if (!lm.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER)) {
 			// 转到手机设置界面，用户设置GPS
 			Intent intent1 = new Intent(
@@ -512,39 +513,52 @@ public class PreviewActivity extends Activity {
 		}
 
 	}
+	class ConfirmBtnTouchListener implements OnTouchListener
+	{
 
+		@Override
+		public boolean onTouch(View v, MotionEvent event) {
+			switch (event.getAction()) {
+			case MotionEvent.ACTION_DOWN:
+				confirmView.setBackgroundResource(R.drawable.start_record_btn_on);
+				break;
+			case MotionEvent.ACTION_UP:
+				confirmView.setBackgroundResource(R.drawable.start_record_btn_off);
+				break;
+			default:
+				break;
+			}
+			return false;
+		}
+		
+	}
 	@Override
 	protected void onResume() {
-		// TODO Auto-generated method stub
 		super.onResume();
 		try {
 			initialTreeView();
 			initEvent();
 			initDB();
 		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
 	@Override
 	protected void onRestart() {
-		// TODO Auto-generated method stub
 		super.onRestart();
 		try {
 			initialTreeView();
 			initEvent();
 			initDB();
 		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
+
 
 }

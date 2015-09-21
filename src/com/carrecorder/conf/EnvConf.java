@@ -22,4 +22,6 @@ public class EnvConf {
 	public static final int SLOW_DOWN = 3;
 	public static final int TUTORIAL_1 = 4;
 	public static final int TUTORIAL_2 = 5;
+	public static final int SPEED_CHIP_SPEED = 4000;//速度仪表盘旋转速度 5s/圈
+	public static final int GREEN = 0x336633;
 }

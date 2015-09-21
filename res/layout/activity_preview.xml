@@ -66,22 +66,20 @@
             android:layout_marginLeft="25dp"
             android:text="语音提示" />
 
-        <Button
-            android:id="@+id/confirm_button"
-            android:layout_width="200dp"
-            android:layout_height="40dp"
-            android:layout_gravity="center"
-            android:text="开始记录" >
-        </Button>
-
         <ListView
             android:id="@+id/id_listview"
             android:layout_width="fill_parent"
             android:layout_height="0dp"
             android:layout_weight="3"
-            android:cacheColorHint="#ffffff" >
-        </ListView>
-        
+            android:cacheColorHint="#ffffff" />
+        <ImageView
+            android:id="@+id/confirm_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="10dp"
+            android:background="@drawable/start_record_btn_off" />
+
     </LinearLayout>
 
 </LinearLayout>

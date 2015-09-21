@@ -32,7 +32,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="0°"
-            android:textSize="15dp" />
+            android:textSize="25dp" 
+            android:alpha="0.8"
+            />
     </FrameLayout>
 
     <LinearLayout
@@ -95,48 +97,69 @@
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:layout_alignParentRight="true" >
-
-        <Button
-            android:id="@+id/arc_hf_video_start"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_gravity="center_vertical"
-            android:background="@drawable/arc_hf_btn_video_start" />
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="200dp"
-        android:layout_height="113dp"
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_centerInParent="true"
-        android:background="@drawable/speed_bkg"
-        android:orientation="vertical" >
+        android:layout_alignParentRight="true" >
 
-        <TextView
-            android:id="@+id/speed_text_view"
+        <ImageView
+            android:id="@+id/speed_bar_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="42dp"
-            android:layout_gravity="center_horizontal"
-            android:text="0km/h"
-            android:textColor="#ff6600"
-            android:textSize="12dp" />
+            android:background="@drawable/speed_bar_bk" />
 
-        <TextView
-            android:id="@+id/dist_text_view"
+        <ImageView
+            android:id="@+id/speed_chip_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="0km"
-            android:textColor="#ff6600"
-            android:textSize="12dp" />
-    </LinearLayout>
-	<ImageView 
-	    android:id="@+id/speed_pointer"
-	    android:background="@drawable/speed_point"
-	    android:layout_alignParentBottom="true"
-	    android:layout_centerInParent="true"
-	    android:layout_height="32dp"
-	    android:layout_width="158dp"
-	    />
+            android:src="@drawable/speed_round_chip_1" />
+
+        <ImageView
+            android:id="@+id/speed_chip_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/speed_round_chip_2" />
+
+        <ImageView
+            android:id="@+id/speed_round_line"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/speed_round_line" />
+
+        <ImageView
+            android:id="@+id/speed_red_point"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/speed_red_point" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" >
+
+            <TextView
+                android:id="@+id/speed_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="0.0"
+                android:textColor="@android:color/white"
+                android:textSize="25dp" 
+                android:alpha="0.8"
+                />
+
+            <TextView
+                android:id="@+id/dist_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/speed_text_view"
+                android:text="0m"
+                android:textColor="@android:color/white"
+                android:textSize="12dp" />
+        </RelativeLayout>
+    </FrameLayout>
+
 </RelativeLayout>
