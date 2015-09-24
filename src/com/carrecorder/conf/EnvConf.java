@@ -24,4 +24,5 @@ public class EnvConf {
 	public static final int TUTORIAL_2 = 5;
 	public static final int SPEED_CHIP_SPEED = 4000;//速度仪表盘旋转速度 5s/圈
 	public static final int GREEN = 0x336633;
+	public static final int MAX_SPEED=10;//限速80km/h
 }

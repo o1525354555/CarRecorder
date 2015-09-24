@@ -8,8 +8,9 @@ import android.widget.ImageView;
 
 public class SpeedRoundAnimation {
 	AlphaAnimation alphaAnimation = new AlphaAnimation(1.0f, 0.0f);
-	ScaleAnimation scaleAnimation = new ScaleAnimation(1.0f, 1.35f, 1.0f, 1.35f,
-			Animation.RELATIVE_TO_SELF,0.5f,Animation.RELATIVE_TO_SELF, 0.5f);
+	ScaleAnimation scaleAnimation = new ScaleAnimation(1.0f, 1.35f, 1.0f,
+			1.35f, Animation.RELATIVE_TO_SELF, 0.5f,
+			Animation.RELATIVE_TO_SELF, 0.5f);
 	AnimationSet animationSet = new AnimationSet(true);
 	private ImageView imageView;
 
@@ -22,7 +23,6 @@ public class SpeedRoundAnimation {
 		scaleAnimation.setRepeatCount(Animation.INFINITE);
 		animationSet.addAnimation(scaleAnimation);
 		animationSet.addAnimation(alphaAnimation);
-		
 	}
 
 	public void start() {

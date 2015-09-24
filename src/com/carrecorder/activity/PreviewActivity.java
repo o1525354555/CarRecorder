@@ -79,15 +79,13 @@ public class PreviewActivity extends Activity {
 	private CheckBox overspeedCheckBox;
 	private CheckBox overspeedCheckBox_1;
 	private CheckBox overspeedCheckBox_2;
-	private Button confirmBtn;
 	private ImageView confirmView;
-	
+
 	// other
 	private Vector<Record> showedRecords;
 	private String videoPath;
 	private String videoName;
 	private DBExecutor db;
-	
 
 	// *********************TreeView*******************//
 	private void initEvent() {
@@ -95,48 +93,57 @@ public class PreviewActivity extends Activity {
 
 			@Override
 			public void onLongClick(Node node, int position) {
-				if(node.getName().length()<20)
-				{
-					return ;
+				if (node.getName().length() < 20) {
+					return;
 				}
 				videoName = getVideoName(node);
 				videoPath = getVideoPath(node);
 				new AlertDialog.Builder(PreviewActivity.this)
-				.setMessage("删除记录"+videoName+"?")
-				.setNegativeButton("取消",
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-							}
-						})
-				.setPositiveButton("确定",
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog,
-									int whichButton) {
-								if(!CameraUtils.delFile(new File(videoPath)))
-								{
-									Toast.makeText(PreviewActivity.this, "没有找到该文件",Toast.LENGTH_SHORT ).show();									
-								}else
-								{
-									Toast.makeText(PreviewActivity.this, "已删除视频："+videoName,Toast.LENGTH_SHORT ).show();			
-								}
-								Sql sql = new SqlFactory().makeSql(Record.class,"delete from Record where videoName = '"+videoName+"'");
-								db.execute(sql);
-								Toast.makeText(PreviewActivity.this, "已删除文字记录。",Toast.LENGTH_SHORT ).show();									
-								initialTreeView();
-								initEvent();
-								try {
-									initDB();
-								} catch (IllegalArgumentException e) {
-									e.printStackTrace();
-								} catch (IllegalAccessException e) {
-									e.printStackTrace();
-								}
-							}
-						}).show();
+						.setMessage("删除记录" + videoName + "?")
+						.setNegativeButton("取消",
+								new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+									}
+								})
+						.setPositiveButton("确定",
+								new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog,
+											int whichButton) {
+										if (!CameraUtils.delFile(new File(
+												videoPath))) {
+											Toast.makeText(
+													PreviewActivity.this,
+													"没有找到该文件",
+													Toast.LENGTH_SHORT).show();
+										} else {
+											Toast.makeText(
+													PreviewActivity.this,
+													"已删除视频：" + videoName,
+													Toast.LENGTH_SHORT).show();
+										}
+										Sql sql = new SqlFactory().makeSql(
+												Record.class,
+												"delete from Record where videoName = '"
+														+ videoName + "'");
+										db.execute(sql);
+										Toast.makeText(PreviewActivity.this,
+												"已删除文字记录。", Toast.LENGTH_SHORT)
+												.show();
+										initialTreeView();
+										initEvent();
+										try {
+											initDB();
+										} catch (IllegalArgumentException e) {
+											e.printStackTrace();
+										} catch (IllegalAccessException e) {
+											e.printStackTrace();
+										}
+									}
+								}).show();
 			}
-			
+
 		});
 		mAdapter.setOnTreeNodeClickListener(new OnTreeNodeClickListener() {
 			@SuppressLint("SdCardPath")
@@ -169,13 +176,14 @@ public class PreviewActivity extends Activity {
 		return Common.regularStr(node.getName(), "<([^<]*)>")
 				.replaceAll("<", "").replaceAll(">", "");
 	}
-	private String getVideoPath(Node node)
-	{
+
+	private String getVideoPath(Node node) {
 		String str = getVideoName(node);
 		String path = Environment.getExternalStorageDirectory()
 				.getAbsolutePath() + "/CarRecorder/video/" + str;
 		return path;
 	}
+
 	private void initView() {
 		recorderCheckBox = (CheckBox) findViewById(R.id.recorder_checkbox);
 		lightCheckBox = (CheckBox) findViewById(R.id.light_checkbox);
@@ -184,8 +192,8 @@ public class PreviewActivity extends Activity {
 		overspeedCheckBox = (CheckBox) findViewById(R.id.overspeed_checkbox);
 		overspeedCheckBox_1 = (CheckBox) findViewById(R.id.overspeed_checkbox_1);
 		overspeedCheckBox_2 = (CheckBox) findViewById(R.id.overspeed_checkbox_2);
-//		confirmBtn = (Button) findViewById(R.id.confirm_button);
-		confirmView =(ImageView) findViewById(R.id.confirm_view);
+		// confirmBtn = (Button) findViewById(R.id.confirm_button);
+		confirmView = (ImageView) findViewById(R.id.confirm_view);
 		lightCheckBox_1.setVisibility(View.GONE);
 		lightCheckBox_2.setVisibility(View.GONE);
 		overspeedCheckBox_1.setVisibility(View.GONE);
@@ -209,16 +217,16 @@ public class PreviewActivity extends Activity {
 	private void initDatas() {
 		mDatas2 = new ArrayList<OrgBean>();
 
-		OrgBean bean2 = new OrgBean(idOfTreeList, 0, "total");
+		OrgBean bean2 = new OrgBean(idOfTreeList, 0, "总里程");
 		idOfTreeList++;
 		mDatas2.add(bean2);
-		bean2 = new OrgBean(idOfTreeList, 0, "recent");
+		bean2 = new OrgBean(idOfTreeList, 0, "最近");
 		idOfTreeList++;
 		mDatas2.add(bean2);
-		bean2 = new OrgBean(idOfTreeList, 0, "last week");
+		bean2 = new OrgBean(idOfTreeList, 0, "上一周");
 		idOfTreeList++;
 		mDatas2.add(bean2);
-		bean2 = new OrgBean(idOfTreeList, 0, "before");
+		bean2 = new OrgBean(idOfTreeList, 0, "之前");
 		idOfTreeList++;
 		mDatas2.add(bean2);
 
@@ -237,7 +245,7 @@ public class PreviewActivity extends Activity {
 	private void initDB() throws IllegalArgumentException,
 			IllegalAccessException {
 		int total = 0;
-		String totalStr="总里程：";
+		String totalStr = "总里程：";
 		db = DBExecutor.getInstance(this);
 		Sql sql = SqlFactory.find(Record.class);
 		List<Record> records = db.executeQuery(sql);
@@ -248,11 +256,13 @@ public class PreviewActivity extends Activity {
 		for (Record instance : records) {
 			showedRecords.add(instance);
 			total += instance.getMelige();
-			mAdapter.addExtraNode(1, "行车距离:" + Common.mDist2kmDistStr(instance.getMelige()) + " | "
-					+ instance.getDate() + "\n<" + instance.getVideoName()
-					+ ">");
+			mAdapter.addExtraNode(
+					1,
+					"行车距离:" + Common.mDist2kmDistStr(instance.getMelige())
+							+ " | " + instance.getDate() + "\n<"
+							+ instance.getVideoName() + ">");
 		}
-		totalStr = totalStr+Common.mDist2kmDistStr(total);
+		totalStr = totalStr + Common.mDist2kmDistStr(total);
 		mAdapter.addExtraNode(0, totalStr);
 	}
 
@@ -513,25 +523,28 @@ public class PreviewActivity extends Activity {
 		}
 
 	}
-	class ConfirmBtnTouchListener implements OnTouchListener
-	{
+
+	class ConfirmBtnTouchListener implements OnTouchListener {
 
 		@Override
 		public boolean onTouch(View v, MotionEvent event) {
 			switch (event.getAction()) {
 			case MotionEvent.ACTION_DOWN:
-				confirmView.setBackgroundResource(R.drawable.start_record_btn_on);
+				confirmView
+						.setBackgroundResource(R.drawable.start_record_btn_on);
 				break;
 			case MotionEvent.ACTION_UP:
-				confirmView.setBackgroundResource(R.drawable.start_record_btn_off);
+				confirmView
+						.setBackgroundResource(R.drawable.start_record_btn_off);
 				break;
 			default:
 				break;
 			}
 			return false;
 		}
-		
+
 	}
+
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -559,6 +572,5 @@ public class PreviewActivity extends Activity {
 			e.printStackTrace();
 		}
 	}
-
 
 }

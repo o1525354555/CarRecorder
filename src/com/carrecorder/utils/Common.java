@@ -13,6 +13,10 @@ public class Common {
 		DecimalFormat df = new DecimalFormat("#.##");
 		return df.format(num);
 	}
+	public static String formatDoubleLocation(double num) {
+		DecimalFormat df = new DecimalFormat("#.########");
+		return df.format(num);
+	}
 	/**
 	 * 匹配第一个符合要求的字符串返回
 	 * @param str

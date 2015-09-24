@@ -31,10 +31,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:alpha="0.9"
             android:text="0°"
-            android:textSize="25dp" 
-            android:alpha="0.8"
-            />
+            android:textColor="@android:color/white"
+            android:textSize="25dp" />
     </FrameLayout>
 
     <LinearLayout
@@ -84,7 +84,10 @@
         android:layout_centerVertical="true"
         android:text=""
         android:textSize="40dp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:textColor="@android:color/white"
+        android:alpha="0.5"
+         />
 
     <EditText
         android:id="@+id/notice_text"
@@ -144,12 +147,11 @@
                 android:id="@+id/speed_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:alpha="0.8"
                 android:gravity="center"
                 android:text="0.0"
                 android:textColor="@android:color/white"
-                android:textSize="25dp" 
-                android:alpha="0.8"
-                />
+                android:textSize="25dp" />
 
             <TextView
                 android:id="@+id/dist_text_view"
@@ -161,5 +163,29 @@
                 android:textSize="12dp" />
         </RelativeLayout>
     </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical" >
+
+        <ImageView
+            android:id="@+id/loading_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/loading" 
+            
+            />
+
+        <TextView
+            android:id="@+id/loading_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@android:color/white"
+            android:text="正在搜索GPS..." />
+    </LinearLayout>
 
 </RelativeLayout>
